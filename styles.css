@@ -20,12 +20,14 @@
     --gradient-gold: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
     --gradient-bg: linear-gradient(180deg, #0E6245 0%, #1a5c42 100%);
 
-    /* Shadows - Toss-style subtle shadows */
-    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-    --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 24px 0 rgba(0, 0, 0, 0.12);
-    --shadow-btn: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+    /* Shadows - Enhanced 3D depth shadows */
+    --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 3px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 12px 20px -8px rgba(0, 0, 0, 0.12);
+    --shadow-btn: 0 4px 12px 0 rgba(0, 0, 0, 0.12), 0 2px 6px 0 rgba(0, 0, 0, 0.08);
+    --shadow-3d: 0 30px 60px -15px rgba(0, 0, 0, 0.3), 0 15px 30px -10px rgba(0, 0, 0, 0.15);
 
     /* Spacing - Toss uses generous spacing */
     --spacing-xs: 4px;
@@ -68,6 +70,7 @@ body {
     position: relative;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    perspective: 1500px;
 }
 
 /* Snowfall Animation */
@@ -136,15 +139,23 @@ body {
     letter-spacing: -0.01em;
 }
 
-/* Search Box - Toss-style clean card */
+/* Search Box - 3D Card Effect */
 .search-box {
     background: var(--bg-primary);
     border-radius: var(--radius-2xl);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
     animation: fadeIn 0.6s ease-out 0.2s both;
     border: 1px solid rgba(255, 255, 255, 0.8);
+    transform: translateZ(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.search-box:hover {
+    transform: translateZ(40px) translateY(-4px);
+    box-shadow: var(--shadow-3d);
 }
 
 .search-input {
@@ -164,7 +175,7 @@ body {
 .search-input:focus {
     outline: none;
     background: var(--bg-tertiary);
-    transform: translateY(-1px);
+    transform: translateZ(10px);
 }
 
 .search-input::placeholder {
@@ -201,28 +212,32 @@ body {
     font-size: var(--font-size-md);
     font-family: var(--font-family);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
     font-weight: 600;
     letter-spacing: -0.01em;
     border: 1.5px solid rgba(255, 255, 255, 0.2);
+    transform: translateZ(10px);
+    box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
 .keyword-btn:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.02);
+    transform: translateZ(25px) translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-lg);
 }
 
 .keyword-btn.active {
     background: #FFFFFF;
     color: var(--primary-green);
     border-color: #FFFFFF;
-    box-shadow: var(--shadow-md);
-    transform: scale(1.02);
+    box-shadow: var(--shadow-xl);
+    transform: translateZ(30px) scale(1.05);
 }
 
-/* Primary Button - Toss-style */
+/* Primary Button - 3D Effect */
 .btn-primary {
     width: 100%;
     padding: var(--spacing-lg) var(--spacing-xl);
@@ -234,23 +249,25 @@ body {
     font-weight: 700;
     font-family: var(--font-family);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-lg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-xl);
     animation: fadeIn 0.6s ease-out 0.6s both;
     letter-spacing: -0.02em;
+    transform: translateZ(30px);
+    position: relative;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.15);
+    transform: translateZ(50px) translateY(-6px);
+    box-shadow: var(--shadow-3d);
 }
 
 .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-md);
+    transform: translateZ(20px) translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
-/* Kakao Login Button - Toss-style */
+/* Kakao Login Button - 3D Style */
 .kakao-login-btn {
     width: 100%;
     padding: var(--spacing-lg);
@@ -266,16 +283,18 @@ body {
     align-items: center;
     justify-content: center;
     gap: var(--spacing-sm);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-md);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
     margin-top: var(--spacing-xl);
     letter-spacing: -0.01em;
+    transform: translateZ(25px);
+    position: relative;
 }
 
 .kakao-login-btn:hover {
     background: #FFD93D;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateZ(45px) translateY(-4px);
+    box-shadow: var(--shadow-3d);
 }
 
 .kakao-icon {
@@ -283,16 +302,24 @@ body {
     height: 20px;
 }
 
-/* Result Card - Toss-style */
+/* Result Card - 3D Card with Depth */
 .result-card {
     background: var(--bg-primary);
     border-radius: var(--radius-2xl);
     padding: var(--spacing-2xl) var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-3d);
     animation: scaleIn 0.5s ease-out;
     color: var(--text-primary);
     border: 1px solid rgba(255, 255, 255, 0.8);
+    transform: translateZ(40px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.result-card:hover {
+    transform: translateZ(60px) translateY(-5px);
+    box-shadow: 0 35px 70px -20px rgba(0, 0, 0, 0.35), 0 18px 35px -12px rgba(0, 0, 0, 0.18);
 }
 
 .book-image-container {
@@ -304,12 +331,14 @@ body {
     max-width: 220px;
     height: auto;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    transition: transform 0.2s ease;
+    box-shadow: var(--shadow-xl);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(20px);
 }
 
 .book-image:hover {
-    transform: scale(1.02);
+    transform: translateZ(40px) scale(1.05) rotateY(5deg);
+    box-shadow: var(--shadow-3d);
 }
 
 .book-info h2 {
@@ -340,7 +369,15 @@ body {
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-xl);
-    border: none;
+    border: 1px solid rgba(14, 98, 69, 0.08);
+    box-shadow: var(--shadow-md);
+    transform: translateZ(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recommendation-reason:hover {
+    transform: translateZ(20px);
+    box-shadow: var(--shadow-lg);
 }
 
 .recommendation-reason h3 {
@@ -359,7 +396,7 @@ body {
     letter-spacing: -0.005em;
 }
 
-/* Back Button - Toss-style */
+/* Back Button - 3D Style */
 .back-btn {
     width: 100%;
     padding: var(--spacing-lg);
@@ -371,15 +408,19 @@ body {
     font-weight: 700;
     font-family: var(--font-family);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin-top: var(--spacing-lg);
     letter-spacing: -0.01em;
+    transform: translateZ(20px);
+    box-shadow: var(--shadow-md);
+    position: relative;
 }
 
 .back-btn:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-1px);
+    transform: translateZ(35px) translateY(-3px);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Hidden Class */
