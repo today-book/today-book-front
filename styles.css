@@ -2,7 +2,7 @@
 
 :root {
     /* Toss-inspired Color Palette with Christmas Theme */
-    --primary-red: #FF3B30;
+    --primary-red: #ff3030;
     --primary-green: #0E6245;
     --primary-gold: #FFB800;
     --bg-primary: #FFFFFF;
@@ -349,8 +349,14 @@ body {
 }
 
 .book-image-container {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+ }
+
+/* 이미지 래퍼: 이미지 크기에 딱 맞는 박스로 버튼이 겹치도록 함 */
+.image-wrapper {
+    display: inline-block;
+    position: relative;
 }
 
 .book-image {
@@ -360,11 +366,70 @@ body {
     box-shadow: var(--shadow-xl);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(20px);
+    display: block; /* ensure wrapper matches image size */
+    position: relative;
+    z-index: 1; /* sit under the heart button */
 }
 
 .book-image:hover {
     transform: translateZ(40px) scale(1.05) rotateY(5deg);
     box-shadow: var(--shadow-3d);
+}
+
+/* Wishlist (찜) 버튼 - 책 이미지 오른쪽 하단 오버레이 */
+.wishlist-btn {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    z-index: 40;
+}
+
+.wishlist-btn:focus {
+    outline: none;
+    transform: scale(1.08);
+}
+
+.heart-icon {
+    width: 26px;
+    height: 26px;
+    display: block;
+    fill: transparent;
+    stroke: rgba(255, 255, 255, 0.95);
+    stroke-width: 1.3;
+    transition: fill 0.18s ease, stroke 0.18s ease, transform 0.12s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* 활성화된 상태: 내부 채우기 (붉은색) */
+.wishlist-btn.active .heart-icon {
+    fill: var(--primary-red);
+    stroke: var(--primary-red);
+    transform: scale(1.05);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* 터치 피드백 */
+.wishlist-btn:active {
+    transform: scale(0.94);
+    box-shadow: var(--shadow-md);
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
 }
 
 .book-info h2 {
@@ -374,6 +439,45 @@ body {
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.3;
+}
+
+.wishlist-btn-inline {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.wishlist-btn-inline:focus {
+    outline: none;
+    transform: scale(1.1);
+}
+
+.heart-icon-inline {
+    width: 24px;
+    height: 24px;
+    display: block;
+    fill: transparent;
+    stroke: var(--primary-red);
+    stroke-width: 1.5;
+    transition: fill 0.18s ease, stroke 0.18s ease, transform 0.12s ease, filter 0.12s ease;
+}
+
+.wishlist-btn-inline.active .heart-icon-inline {
+    fill: var(--primary-red);
+    stroke: var(--primary-red);
+    transform: scale(1.05);
+}
+
+.wishlist-btn-inline:active {
+    transform: scale(0.95);
 }
 
 .book-info .author {
@@ -529,4 +633,85 @@ body {
 .kakao-login-btn:active,
 .back-btn:active {
     transform: scale(0.98);
+}
+
+
+/* Slider Section */
+.slider-section {
+  margin-top: var(--spacing-xl);
+  transform: translateZ(30px);
+}
+
+.slider-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: var(--spacing-md);
+  letter-spacing: -0.01em;
+}
+
+/* Horizontal Slider (리디/밀리 스타일 핵심) */
+.book-slider {
+  display: flex;
+  gap: var(--spacing-md);
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  padding: 0 var(--spacing-md) var(--spacing-lg); /* ✅ 좌우 여백 추가 */
+  margin: 0 calc(-1 * var(--spacing-md));         /* ✅ 컨테이너 밖까지 스치게 */
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.book-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* Slider Card */
+.slider-card {
+  flex: 0 0 150px;                 /* ✅ 살짝 줄여서 다음 카드 노출 */
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  box-shadow: var(--shadow-lg);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 모바일 기준: hover 대신 액티브 느낌 */
+.slider-card:active {
+  transform: scale(0.97);
+}
+
+/* Cover */
+.slider-card img {
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+/* Info */
+.slider-card .info {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.slider-card .title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slider-card .author {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
 }
