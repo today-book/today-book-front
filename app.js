@@ -144,72 +144,59 @@ keywordsGrid.addEventListener('click', (e) => {
 });
 
 // Recommend Button Click
+// Recommend Button Click
 recommendBtn.addEventListener('click', async () => {
-  // Get mood from input or selected keywords
-  const inputMood = moodInput.value.trim();
+  const input = moodInput.value.trim();
 
-  if (selectedKeywords.length === 0 && !inputMood) {
-    alert('기분을 입력하거나 키워드를 선택해주세요! 🎅');
+  if (selectedKeywords.length === 0 && !input) {
+    alert('상황이나 키워드를 입력해주세요 🙂');
     return;
   }
 
-  // Show loading state
+  // ✅ query 하나로 통합
+  const query = [
+    input,
+    ...selectedKeywords
+  ].filter(Boolean).join(' ');
+
   recommendBtn.innerHTML = '<span class="loading"></span> 추천 중...';
   recommendBtn.disabled = true;
 
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  try {
+    const response = await fetch(
+        `http://localhost:8080/api/v1/search/books?query=${encodeURIComponent(query)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+    );
 
-  // Get book recommendation
-  let book;
-  if (selectedKeywords.length > 0) {
-    // Pick a random keyword from selected keywords
-    const randomKeyword = selectedKeywords[Math.floor(Math.random() * selectedKeywords.length)];
-    book = getBookRecommendation(randomKeyword);
-  } else {
-    // Use input mood
-    const matchedKeyword = findMatchingKeyword(inputMood);
-    book = getBookRecommendation(matchedKeyword);
-  }
-
-  displayBookRecommendation(book, selectedKeywords.length > 0 ? selectedKeywords : [inputMood]);
-
-  // Switch to result page
-  mainPage.classList.add('hidden');
-  resultPage.classList.remove('hidden');
-
-  // Scroll to top
-  window.scrollTo(0, 0);
-
-  // Reset button
-  recommendBtn.innerHTML = '🎁 책 추천받기';
-  recommendBtn.disabled = false;
-});
-
-// Find matching keyword from input
-function findMatchingKeyword(input) {
-  const keywords = Object.keys(bookDatabase);
-  for (const keyword of keywords) {
-    if (input.includes(keyword) || keyword.includes(input)) {
-      return keyword;
+    if (!response.ok) {
+      throw new Error('Search API 호출 실패');
     }
-  }
-  // Default to first keyword if no match
-  return keywords[Math.floor(Math.random() * keywords.length)];
-}
 
-// Get book recommendation based on mood
-function getBookRecommendation(mood) {
-  // Find exact match or closest match
-  if (bookDatabase[mood]) {
-    return bookDatabase[mood];
-  }
+    const data = await response.json();
 
-  // If no exact match, return a random book
-  const keywords = Object.keys(bookDatabase);
-  const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-  return bookDatabase[randomKeyword];
-}
+    // ✅ 배열 / 단일 객체 모두 대응
+    const book = Array.isArray(data) ? data[0] : data;
+
+    displayBookRecommendation(book, selectedKeywords.length ? selectedKeywords : [input]);
+
+    // ✅ 화면 전환
+    mainPage.classList.add('hidden');
+    resultPage.classList.remove('hidden');
+    window.scrollTo(0, 0);
+
+  } catch (error) {
+    console.error(error);
+    alert('추천 중 문제가 발생했습니다 😢');
+  } finally {
+    recommendBtn.innerHTML = '🎁 책 추천받기';
+    recommendBtn.disabled = false;
+  }
+});
 
 // Display book recommendation
 async function displayBookRecommendation(book, selectedMoods = []) {
