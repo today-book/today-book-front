@@ -117,6 +117,10 @@ const recommendBtn = document.getElementById('recommendBtn');
 const backBtn = document.getElementById('backBtn');
 const kakaoLoginMain = document.getElementById('kakaoLoginMain');
 const kakaoLoginResult = document.getElementById('kakaoLoginResult');
+const saveBtn = document.getElementById('saveBtn');
+
+// Login
+const isLoggedIn = !!localStorage.getItem('accessToken');
 
 // Keyword Selection - Now supports multiple selections
 keywordsGrid.addEventListener('click', (e) => {
@@ -340,6 +344,13 @@ if (loginResult === 'failed') {
   alert('카카오 로그인에 실패했습니다. 다시 시도해 주세요.');
 }
 
-if (localStorage.getItem('accessToken')) {
-  kakaoLoginMain.classList.add('hidden');
-}
+kakaoLoginMain
+.classList.toggle('hidden', isLoggedIn);
+
+kakaoLoginResult
+.classList.toggle('hidden', isLoggedIn);
+
+saveBtn
+.classList.toggle('hidden', !isLoggedIn);
+
+

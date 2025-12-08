@@ -302,6 +302,32 @@ body {
     height: 20px;
 }
 
+.save-btn {
+  width: 100%;
+  padding: var(--spacing-lg);
+  background: rgba(176, 44, 44, 0.36);
+  border: 2px solid rgba(220, 80, 80, 0.5);
+  color: #fff2f2;
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: var(--spacing-lg);
+  letter-spacing: -0.01em;
+  transform: translateZ(20px);
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.save-btn:hover {
+  background: rgba(176, 44, 44, 0.5);
+  border-color: rgba(240, 120, 120, 0.7);
+  transform: translateZ(35px) translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
 /* Result Card - 3D Card with Depth */
 .result-card {
     background: var(--bg-primary);
