@@ -340,11 +340,6 @@ if (loginResult === 'failed') {
   alert('카카오 로그인에 실패했습니다. 다시 시도해 주세요.');
 }
 
-// ✅ 로그인 상태 → 버튼 숨김
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('accessToken');
-
-  if (token) {
-    kakaoLoginMain.style.display = 'none';
-  }
-});
+if (localStorage.getItem('accessToken')) {
+  kakaoLoginMain.classList.add('hidden');
+}
