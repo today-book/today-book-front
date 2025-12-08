@@ -298,9 +298,10 @@ backBtn.addEventListener('click', () => {
   window.scrollTo(0, 0);
 });
 
-// Kakao Login (Mock)
+
 function handleKakaoLogin() {
-  alert('🎄 카카오 로그인 기능은 실제 서비스에서 구현됩니다!\n\n현재는 데모 버전으로, 백엔드 연동 시 실제 카카오 OAuth 로그인이 적용됩니다.');
+  window.location.href =
+      "http://localhost:8080/oauth2/authorization/kakao";
 }
 
 kakaoLoginMain.addEventListener('click', handleKakaoLogin);
@@ -331,3 +332,10 @@ document.addEventListener('touchend', (e) => {
   }
   lastTouchEnd = now;
 }, false);
+
+
+const loginResult = new URLSearchParams(location.search).get('login');
+
+if (loginResult === 'failed') {
+  alert('카카오 로그인에 실패했습니다. 다시 시도해 주세요.');
+}
