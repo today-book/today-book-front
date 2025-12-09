@@ -65,18 +65,20 @@ recommendBtn.addEventListener('click', async () => {
     return;
   }
 
-  // ✅ query 하나로 통합
-  const query = [
-    input,
-    ...selectedKeywords
-  ].filter(Boolean).join(' ');
+  const params = new URLSearchParams();
+  if (input) {
+    params.append('query', input);
+  }
+  selectedKeywords.forEach(emotion => {
+    params.append('emotions', emotion);
+  });
 
   recommendBtn.innerHTML = '<span class="loading"></span> 추천 중...';
   recommendBtn.disabled = true;
 
   try {
     const response = await fetch(
-        `http://localhost:8080/api/v1/search/books?query=${encodeURIComponent(query)}`,
+        `http://localhost:8081/api/v1/search/books?${params.toString()}`,
         {
           method: 'GET',
           headers: {
