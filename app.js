@@ -78,7 +78,7 @@ recommendBtn.addEventListener('click', async () => {
 
   try {
     const response = await fetch(
-        `http://localhost:8080/api/v1/search/books?${params.toString()}`,
+        `https://54.116.27.149/api/v1/search/books?${params.toString()}`,
         {
           method: 'GET',
           headers: {
@@ -117,7 +117,7 @@ recommendBtn.addEventListener('click', async () => {
 async function displayBookRecommendation(book) {
   document.getElementById('bookTitle').textContent = book.title;
   document.getElementById('bookAuthor').textContent = book.author;
-  document.getElementById('bookPublisher').textContent = book.score;
+  document.getElementById('bookPublisher').textContent = book.publisher;
   document.getElementById('recommendationText').textContent = book.reason;
 
   // Set book image (will be generated)
@@ -126,7 +126,7 @@ async function displayBookRecommendation(book) {
 
   // Generate a placeholder image URL (in a real app, this would come from an API)
   // For now, we'll use a data URL with a colored rectangle
-  bookImage.src = generateBookCoverPlaceholder(book.title);
+  bookImage.src = book.thumbnail
 
   // Wishlist 버튼 초기화 및 상태 반영 (localStorage 기반)
   if (wishlistBtn) {
