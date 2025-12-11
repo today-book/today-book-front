@@ -78,7 +78,7 @@ recommendBtn.addEventListener('click', async () => {
 
   try {
     const response = await fetch(
-        `https://54.116.27.149/api/v1/search/books?${params.toString()}`,
+        `https://dev-api.todaybook.life/api/v1/search/books?${params.toString()}`,
         {
           method: 'GET',
           headers: {
@@ -314,7 +314,7 @@ backBtn.addEventListener('click', () => {
 
 function handleKakaoLogin() {
   window.location.href =
-      "http://localhost:8080/oauth2/authorization/kakao";
+      "https://dev-api.todaybook.life/oauth2/authorization/kakao";
 }
 
 kakaoLoginMain.addEventListener('click', handleKakaoLogin);
