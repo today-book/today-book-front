@@ -119,6 +119,7 @@ async function displayBookRecommendation(book) {
   document.getElementById('bookAuthor').textContent = book.author;
   document.getElementById('bookPublisher').textContent = book.publisher;
   document.getElementById('recommendationText').textContent = book.reason;
+  document.getElementById('bookDescriptionText').textContent = book.description;
 
   // Set book image (will be generated)
   const bookImage = document.getElementById('bookImage');

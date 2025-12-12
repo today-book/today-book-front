@@ -494,7 +494,7 @@ body {
     font-weight: 500;
 }
 
-.recommendation-reason {
+.recommendation-reason, .book-description {
     background: var(--bg-secondary);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
@@ -505,12 +505,12 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.recommendation-reason:hover {
+.recommendation-reason:hover, .book-description:hover {
     transform: translateZ(20px);
     box-shadow: var(--shadow-lg);
 }
 
-.recommendation-reason h3 {
+.recommendation-reason, .book-description h3 {
     font-size: var(--font-size-xl);
     color: var(--text-primary);
     margin-bottom: var(--spacing-md);
@@ -518,7 +518,7 @@ body {
     letter-spacing: -0.01em;
 }
 
-.recommendation-reason p {
+.recommendation-reason, .book-description p {
     font-size: var(--font-size-md);
     line-height: 1.7;
     color: var(--text-secondary);
