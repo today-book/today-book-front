@@ -60,8 +60,8 @@ keywordsGrid.addEventListener('click', (e) => {
 recommendBtn.addEventListener('click', async () => {
   const input = moodInput.value.trim();
 
-  if (selectedKeywords.length === 0 && !input) {
-    alert('상황이나 키워드를 입력해주세요 🙂');
+  if (selectedKeywords.length === 0) {
+    alert('기분 키워드를 선택해 주세요 😊');
     return;
   }
 
