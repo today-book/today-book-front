@@ -211,8 +211,8 @@ async function renderBookSlider(books) {
     const card = document.createElement('div');
     card.className = 'slider-card';
 
-    const imageUrl = book.imageUrl
-        ? book.imageUrl
+    const imageUrl = book.thumbnail
+        ? book.thumbnail
         : generateBookCoverPlaceholder(book.title);
 
     card.innerHTML = `
