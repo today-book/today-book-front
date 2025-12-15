@@ -1,0 +1,16 @@
+<script>
+  fetch('https://dev-api.todaybook.life/api/v1/auth/logout', {
+    method: 'POST',
+    credentials: 'include'
+  })
+  .catch(() => {
+    // 로그아웃은 best-effort라 에러 무시
+  })
+  .finally(() => {
+    // 1. Access Token 제거
+    localStorage.removeItem('accessToken');
+
+    // 2. 홈으로 이동
+    window.location.href = '/today-book-front';
+  });
+</script>
