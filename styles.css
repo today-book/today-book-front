@@ -715,3 +715,30 @@ body {
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
 }
+
+.description-wrapper {
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.description-wrapper.collapsed {
+  max-height: 4.5em; /* 3줄 정도 */
+}
+
+.description-wrapper.expanded {
+  max-height: 1000px;
+}
+
+.more-btn {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: #165B33;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.more-btn:hover {
+  text-decoration: underline;
+}

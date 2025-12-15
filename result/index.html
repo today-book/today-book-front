@@ -39,14 +39,26 @@
       <p class="publisher" id="bookPublisher">출판사 | 출간일</p>
     </div>
 
-    <div class="book-description">
-      <h3>📖 책 소개</h3>
-      <p id="bookDescriptionText">책 설명이 여기에 표시됩니다.</p>
-    </div>
-
     <div class="recommendation-reason">
       <h3>🎄 이 책을 추천하는 이유</h3>
       <p id="recommendationText">추천 이유가 여기에 표시됩니다.</p>
+    </div>
+
+    <div class="book-description">
+      <h3>📖 책 소개</h3>
+
+      <div class="description-wrapper collapsed" id="descriptionWrapper">
+        <p id="bookDescriptionText">책 설명이 여기에 표시됩니다.</p>
+      </div>
+
+      <button
+          type="button"
+          class="more-btn"
+          id="descriptionToggleBtn"
+          aria-expanded="false"
+      >
+        더보기
+      </button>
     </div>
   </div>
 

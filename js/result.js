@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
     wishlistBtn.classList.toggle('active', active);
     wishlistBtn.setAttribute('aria-pressed', active);
     wishlistBtn.title = active ? '찜 해제' : '찜하기';
+
+    setupDescriptionToggle();
   }
 
   function isBookWishlisted(bookKey) {
@@ -184,3 +186,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return canvas.toDataURL();
   }
 });
+
+function setupDescriptionToggle() {
+  const wrapper = document.getElementById('descriptionWrapper');
+  const btn = document.getElementById('descriptionToggleBtn');
+  const text = document.getElementById('bookDescriptionText');
+
+  if (!wrapper || !btn || !text) return;
+
+  // 책 바뀔 때마다 초기 상태로
+  wrapper.classList.add('collapsed');
+  wrapper.classList.remove('expanded');
+  btn.textContent = '더보기';
+  btn.setAttribute('aria-expanded', 'false');
+
+  // 리스너는 한 번만 바인딩
+  if (!btn.dataset.bound) {
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', () => {
+      const expanded = wrapper.classList.toggle('expanded');
+      wrapper.classList.toggle('collapsed', !expanded);
+
+      btn.textContent = expanded ? '접기' : '더보기';
+      btn.setAttribute('aria-expanded', String(expanded));
+    });
+  }
+
+  // 렌더 이후 길이 측정 → 길 때만 버튼 노출
+  requestAnimationFrame(() => {
+    const isOverflowing = text.scrollHeight > wrapper.clientHeight + 4;
+    btn.style.display = isOverflowing ? 'inline-block' : 'none';
+  });
+}
