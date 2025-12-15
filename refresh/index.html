@@ -2,5 +2,24 @@
   fetch('https://dev-api.todaybook.life/api/v1/auth/refresh', {
     method: 'POST',
     credentials: 'include'
-  }).then(r => r.json()).then(console.log);
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('refresh failed');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // accessToken 교체
+    localStorage.setItem('access_token', data.accessToken);
+
+    console.log('accessToken refreshed');
+  })
+  .catch(err => {
+    console.error(err);
+
+    // refresh 실패 = 인증 불가 → 강제 로그아웃 처리
+    localStorage.removeItem('access_token');
+    // window.location.href = '/';
+  });
 </script>
