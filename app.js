@@ -33,7 +33,7 @@ const saveBtn = document.getElementById('saveBtn');
 const wishlistBtn = document.getElementById('wishlistBtn');
 
 // Login
-const isLoggedIn = !!localStorage.getItem('accessToken');
+const isLoggedIn = !!localStorage.getItem('access_token');
 
 // Keyword Selection - Now supports multiple selections
 keywordsGrid.addEventListener('click', (e) => {
