@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     recommendBtn.disabled = true;
 
     try {
-      const books = recommend({ query, selectedKeywords });
+      const books = await recommend(query, selectedKeywords);
 
       sessionStorage.setItem('recommendation:primary', JSON.stringify(books[0] ?? null));
       sessionStorage.setItem('recommendation:others', JSON.stringify(books.slice(1)));
