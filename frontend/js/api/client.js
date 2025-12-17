@@ -1,5 +1,5 @@
-import config from '../config';
-import { refreshAccessToken } from "./auth";
+import config from '../config.js';
+import { refreshAccessToken } from "./auth.js";
 
 let isRefreshing = false; // 중복 실행 방지
 let retryQueue = [];        // 토큰 재발급 동안 대기할 함수 목록

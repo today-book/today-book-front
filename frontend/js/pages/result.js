@@ -1,7 +1,7 @@
-import config from "../config";
-import { createSnowflakes, preventDoubleTapZoom } from "../modules/common";
-import { handleKakaoLogin, isLoggedIn } from "../modules/login";
-import { isWishlisted, setWishlist } from "../modules/wishlist";
+import config from "../config.js";
+import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
+import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
+import { isWishlisted, setWishlist } from "../modules/wishlist.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   createSnowflakes();

@@ -1,4 +1,4 @@
-import {api} from "./client";
+import {api} from "./client.js";
 
 async function recommend({ query, emotions }) {
   const params = new URLSearchParams();

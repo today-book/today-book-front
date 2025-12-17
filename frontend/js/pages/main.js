@@ -1,8 +1,8 @@
-import config from '../config';
-import { createSnowflakes, preventDoubleTapZoom } from '../modules/common';
-import { recommend } from "../api/recommend";
-import { handleKakaoLogin, isLoggedIn } from "../modules/login";
-import { init } from "../api/init";
+import config from '../config.js';
+import { createSnowflakes, preventDoubleTapZoom } from '../modules/common.js';
+import { recommend } from "../api/recommend.js";
+import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
+import { init } from "../api/init.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
   await init();
