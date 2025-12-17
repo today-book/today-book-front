@@ -28,10 +28,10 @@ jobs:
           username: ${{ secrets.DEV_REMOTE_USER }}
           key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
           port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
-          source: "./frontend/"
-          target: "/var/www/today-book-front"
+          source: "./frontend/*"
+          target: "/home/ubuntu/deploy/today-book-front"
           rm: true
-          strip_components: 0
+          strip_components: 1
 
       # Nginx reload
       - name: Reload Nginx
@@ -42,5 +42,5 @@ jobs:
           key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
           port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
           script: |
-            sudo chown -R www-data:www-data /var/www/today-book-front
+            sudo chown -R www-data:www-data /home/ubuntu/deploy/today-book-front
             sudo systemctl reload nginx
