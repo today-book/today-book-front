@@ -1,4 +1,4 @@
-import { refreshAccessToken } from "./auth";
+import { refreshAccessToken } from "./auth.js";
 
 async function init() {
   try {
