@@ -1,5 +1,7 @@
-<script>
-  fetch('https://dev-api.todaybook.life/api/v1/auth/logout', {
+<script type="module">
+  import config from '../js/config.js';
+
+  fetch(`${config.API_BASE_URL}/auth/v1/logout`, {
     method: 'POST',
     credentials: 'include'
   })
@@ -8,7 +10,7 @@
   })
   .finally(() => {
     // 1. Access Token 제거
-    localStorage.removeItem('access_token');
+    sessionStorage.removeItem('access_token');
 
     // 2. 홈으로 이동
     window.location.href = '/today-book-front';

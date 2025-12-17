@@ -1,2 +1,4 @@
 .DS_Store
 .idea
+
+/frontend/js/config.js

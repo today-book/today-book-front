@@ -1,0 +1,46 @@
+name: Deploy AWS
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate config.js
+        run: |
+          echo "export default { 
+            BASE_PATH: '',
+            API_BASE_URL: '${{ secrets.DEV_API_BASE_URL }}',
+            KAKAO_SDK_KEY: '${{ secrets.KAKAO_SDK_KEY }}'
+          };" > frontend/js/config.js
+
+      # EC2로 정적 파일 배포
+      - name: Upload static files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEV_REMOTE_IP }}
+          username: ${{ secrets.DEV_REMOTE_USER }}
+          key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
+          port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
+          source: "./frontend/"
+          target: "/var/www/today-book-front"
+          rm: true
+          strip_components: 0
+
+      # Nginx reload
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.DEV_REMOTE_IP }}
+          username: ${{ secrets.DEV_REMOTE_USER }}
+          key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
+          port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
+          script: |
+            sudo chown -R www-data:www-data /var/www/today-book-front
+            sudo systemctl reload nginx
