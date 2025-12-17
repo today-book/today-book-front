@@ -2,7 +2,7 @@ import config from '../config';
 
 async function logout() {
   await fetch(
-      new URL('/api/v1/auth/logout', config.API_BASE_URL),
+      new URL('/auth/v1/logout', config.API_BASE_URL),
       {
         method: 'POST',
         credentials: 'include'
@@ -16,7 +16,7 @@ async function logout() {
 
 async function refreshAccessToken() {
   const res = await fetch(
-      new URL('/api/v1/auth/refresh', config.API_BASE_URL),
+      new URL('/auth/v1/refresh', config.API_BASE_URL),
       {
         method: 'POST',
         credentials: 'include'

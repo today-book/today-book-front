@@ -7,7 +7,7 @@
   async function login(authCode) {
     try {
       const response = await fetch(
-          `${config.API_BASE_URL}/v1/auth/login`,
+          `${config.API_BASE_URL}/auth/v1/login`,
           {
             method: 'POST',
             headers: {
