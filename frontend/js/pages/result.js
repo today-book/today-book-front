@@ -1,4 +1,8 @@
-// js/result.js
+import config from "../config";
+import { createSnowflakes, preventDoubleTapZoom } from "../modules/common";
+import { handleKakaoLogin, isLoggedIn } from "../modules/login";
+import { isWishlisted, setWishlist } from "../modules/wishlist";
+
 document.addEventListener('DOMContentLoaded', () => {
   createSnowflakes();
   preventDoubleTapZoom();
@@ -8,86 +12,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveBtn = document.getElementById('saveBtn');
   const wishlistBtn = document.getElementById('wishlistBtn');
 
+  // 로그인 버튼 설정
   const loggedIn = isLoggedIn();
   kakaoLoginResult.classList.toggle('hidden', loggedIn);
   saveBtn.classList.toggle('hidden', !loggedIn);
 
-  // ✅ 세션에서 복원
+  kakaoLoginResult.addEventListener('click', () => {
+    handleKakaoLogin();
+  });
+
+  backBtn.addEventListener('click', () => {
+    location.href = `${config.BASE_PATH}/`;
+  });
+
+  // 추천 결과 설정
   const primary = JSON.parse(sessionStorage.getItem('recommendation:primary') || 'null');
   const others = JSON.parse(sessionStorage.getItem('recommendation:others') || '[]');
 
   if (!primary) {
-    // 직접 진입(새로고침 포함) 시 메인으로
-    location.href = `${BASE_PATH}/`;
+    location.href = `${config.BASE_PATH}/`;
     return;
   }
 
-  displayBookRecommendation(primary);
+  renderRecommendation(primary);
   renderBookSlider(others);
 
-  backBtn.addEventListener('click', () => {
-    location.href = `${BASE_PATH}/`;
-  });
-
-  kakaoLoginResult.addEventListener('click', () => {
-    handleKakaoLogin();
-    alert('✨ 추천 결과가 저장되었습니다! (데모 모드)');
-  });
-
-  function displayBookRecommendation(book) {
-    document.getElementById('bookTitle').textContent = book.title;
-    document.getElementById('bookAuthor').textContent = book.author;
-    document.getElementById('bookPublisher').textContent = book.publisher;
-    document.getElementById('recommendationText').textContent = book.reason;
-    document.getElementById('bookDescriptionText').textContent = book.description;
-
-    const bookImage = document.getElementById('bookImage');
-    bookImage.alt = book.title;
-    bookImage.src = book.thumbnail;
-
-    const bookKey = book.id ?? book.title;
-    wishlistBtn.dataset.bookId = bookKey;
-
-    const active = isBookWishlisted(bookKey);
-    wishlistBtn.classList.toggle('active', active);
-    wishlistBtn.setAttribute('aria-pressed', active);
-    wishlistBtn.title = active ? '찜 해제' : '찜하기';
-
-    setupDescriptionToggle();
-  }
-
-  function isBookWishlisted(bookKey) {
-    try {
-      const list = JSON.parse(localStorage.getItem('wishlist') || '[]');
-      return list.includes(bookKey);
-    } catch {
-      return false;
-    }
-  }
-
-  function setWishlistState(bookKey, state) {
-    try {
-      const list = JSON.parse(localStorage.getItem('wishlist') || '[]');
-      let next = Array.isArray(list) ? list.slice() : [];
-
-      if (state) {
-        if (!next.includes(bookKey)) next.push(bookKey);
-      } else {
-        next = next.filter((k) => k !== bookKey);
-      }
-
-      localStorage.setItem('wishlist', JSON.stringify(next));
-    } catch (e) {
-      console.error('wishlist 저장 실패', e);
-    }
-  }
-
+  // 찜하기 버튼 설정
   wishlistBtn.addEventListener('click', () => {
     const key = wishlistBtn.dataset.bookId;
     if (!key) return;
 
     const willBeActive = !wishlistBtn.classList.contains('active');
-    setWishlistState(key, willBeActive);
+    setWishlist(key, willBeActive);
     wishlistBtn.classList.toggle('active', willBeActive);
     wishlistBtn.setAttribute('aria-pressed', willBeActive);
     wishlistBtn.title = willBeActive ? '찜 해제' : '찜하기';
@@ -100,6 +56,63 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
   });
 
+  // 추천 결과 렌더링
+  function renderRecommendation(book) {
+    document.getElementById('bookTitle').textContent = book.title;
+    document.getElementById('bookAuthor').textContent = book.author;
+    document.getElementById('bookPublisher').textContent = book.publisher;
+    document.getElementById('recommendationText').textContent = book.reason;
+    document.getElementById('bookDescriptionText').textContent = book.description;
+
+    const bookImage = document.getElementById('bookImage');
+    bookImage.alt = book.title;
+    bookImage.src = book.thumbnail;
+
+    const bookId = book.bookId;
+    wishlistBtn.dataset.bookId = bookId;
+
+    const active = isWishlisted(bookId);
+    wishlistBtn.classList.toggle('active', active);
+    wishlistBtn.setAttribute('aria-pressed', active);
+    wishlistBtn.title = active ? '찜 해제' : '찜하기';
+
+    renderDescriptionToggle();
+  }
+
+  // 도서 소개 더보기 버튼 렌더링
+  function renderDescriptionToggle() {
+    const wrapper = document.getElementById('descriptionWrapper');
+    const btn = document.getElementById('descriptionToggleBtn');
+    const text = document.getElementById('bookDescriptionText');
+
+    if (!wrapper || !btn || !text) return;
+
+    // 책 바뀔 때마다 초기 상태로
+    wrapper.classList.add('collapsed');
+    wrapper.classList.remove('expanded');
+    btn.textContent = '더보기';
+    btn.setAttribute('aria-expanded', 'false');
+
+    // 리스너는 한 번만 바인딩
+    if (!btn.dataset.bound) {
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const expanded = wrapper.classList.toggle('expanded');
+        wrapper.classList.toggle('collapsed', !expanded);
+
+        btn.textContent = expanded ? '접기' : '더보기';
+        btn.setAttribute('aria-expanded', String(expanded));
+      });
+    }
+
+    // 렌더 이후 길이 측정 → 길 때만 버튼 노출
+    requestAnimationFrame(() => {
+      const isOverflowing = text.scrollHeight > wrapper.clientHeight + 4;
+      btn.style.display = isOverflowing ? 'inline-block' : 'none';
+    });
+  }
+
+  // 추천 도서 리스트 렌더링
   function renderBookSlider(books) {
     const slider = document.getElementById('bookSlider');
     const section = document.getElementById('sliderSection');
@@ -129,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       card.addEventListener('click', () => {
-        displayBookRecommendation(book);
+        renderRecommendation(book);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
@@ -186,35 +199,3 @@ document.addEventListener('DOMContentLoaded', () => {
     return canvas.toDataURL();
   }
 });
-
-function setupDescriptionToggle() {
-  const wrapper = document.getElementById('descriptionWrapper');
-  const btn = document.getElementById('descriptionToggleBtn');
-  const text = document.getElementById('bookDescriptionText');
-
-  if (!wrapper || !btn || !text) return;
-
-  // 책 바뀔 때마다 초기 상태로
-  wrapper.classList.add('collapsed');
-  wrapper.classList.remove('expanded');
-  btn.textContent = '더보기';
-  btn.setAttribute('aria-expanded', 'false');
-
-  // 리스너는 한 번만 바인딩
-  if (!btn.dataset.bound) {
-    btn.dataset.bound = '1';
-    btn.addEventListener('click', () => {
-      const expanded = wrapper.classList.toggle('expanded');
-      wrapper.classList.toggle('collapsed', !expanded);
-
-      btn.textContent = expanded ? '접기' : '더보기';
-      btn.setAttribute('aria-expanded', String(expanded));
-    });
-  }
-
-  // 렌더 이후 길이 측정 → 길 때만 버튼 노출
-  requestAnimationFrame(() => {
-    const isOverflowing = text.scrollHeight > wrapper.clientHeight + 4;
-    btn.style.display = isOverflowing ? 'inline-block' : 'none';
-  });
-}

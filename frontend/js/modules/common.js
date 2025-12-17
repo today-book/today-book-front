@@ -1,6 +1,3 @@
-// js/common.js
-const BASE_PATH = '/today-book-front';
-
 function createSnowflakes() {
   const snowflakesContainer = document.getElementById('snowflakes');
   if (!snowflakesContainer) return;
@@ -33,10 +30,7 @@ function preventDoubleTapZoom() {
   );
 }
 
-function isLoggedIn() {
-  return !!localStorage.getItem('access_token');
-}
-
-function handleKakaoLogin() {
-  window.location.href = 'https://dev-api.todaybook.life/oauth2/authorization/kakao';
+export {
+  createSnowflakes,
+  preventDoubleTapZoom
 }
