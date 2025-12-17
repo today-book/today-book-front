@@ -5,7 +5,7 @@ async function recommend({ query, emotions }) {
   if (query) params.append('query', query);
   emotions.forEach((e) => params.append('emotions', e));
 
-  const res = await api(`/api/v1/search/books?${params.toString()}`, {
+  const res = await api(`/public/v1/search/books?${params.toString()}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   });
