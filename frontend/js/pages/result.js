@@ -1,7 +1,8 @@
 import config from "../config.js";
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
 import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
-import { isWishlisted, setWishlist } from "../modules/wishlist.js";
+import { toggleGuestBookshelf } from "../modules/bookshelf-guest.js";
+import { addBookshelf, deleteBookshelf } from "../api/bookshelf";
 
 document.addEventListener('DOMContentLoaded', () => {
   createSnowflakes();
@@ -38,12 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderBookSlider(others);
 
   // 찜하기 버튼 설정
-  wishlistBtn.addEventListener('click', () => {
-    const key = wishlistBtn.dataset.bookId;
-    if (!key) return;
+  wishlistBtn.addEventListener('click', async () => {
+    const bookId = wishlistBtn.dataset.bookId;
+    if (!bookId) return;
 
     const willBeActive = !wishlistBtn.classList.contains('active');
-    setWishlist(key, willBeActive);
+
+    // UI 즉시 반영
     wishlistBtn.classList.toggle('active', willBeActive);
     wishlistBtn.setAttribute('aria-pressed', willBeActive);
     wishlistBtn.title = willBeActive ? '찜 해제' : '찜하기';
@@ -54,6 +56,27 @@ document.addEventListener('DOMContentLoaded', () => {
           { duration: 220 }
       );
     } catch {}
+
+    // 내 책장 저장 (session, DB)
+    try {
+      if (isLoggedIn()) {
+        if (willBeActive) {
+          await addBookshelf(primary);
+        } else {
+          await deleteBookshelf(primary);
+        }
+      } else {
+        toggleGuestBookshelf(primary, willBeActive);
+      }
+    } catch (e) {
+      console.log(e);
+
+      wishlistBtn.classList.toggle('active', !willBeActive);
+      wishlistBtn.setAttribute('aria-pressed', !willBeActive);
+      wishlistBtn.title = !willBeActive ? '찜 해제' : '찜하기';
+
+      alert('내 책장 저장 중 오류가 발생했습니다.');
+    }
   });
 
   // 추천 결과 렌더링
