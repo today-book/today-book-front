@@ -3,9 +3,11 @@ import { createSnowflakes, preventDoubleTapZoom } from '../modules/common.js';
 import { recommend } from "../api/recommend.js";
 import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
 import { init } from "../api/init.js";
+import { initNavigation } from "../modules/menu.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
   await init();
+  initNavigation();
 
   createSnowflakes();
   preventDoubleTapZoom();

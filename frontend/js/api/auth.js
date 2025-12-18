@@ -31,4 +31,4 @@ async function refreshAccessToken() {
   return data.accessToken;
 }
 
-export { refreshAccessToken }
+export { logout, refreshAccessToken }

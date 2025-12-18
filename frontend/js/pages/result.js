@@ -1,25 +1,66 @@
 import config from "../config.js";
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
 import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
-import { toggleGuestBookshelf } from "../modules/bookshelf-guest.js";
-import { addBookshelf, deleteBookshelf } from "../api/bookshelf";
+import { toggleGuestBookshelf, getGuestBookshelf } from "../modules/bookshelf-guest.js";
+import { deleteBookshelf, addBookshelf } from "../api/bookshelf.js";
+import { share } from "../api/share.js";
+import { initNavigation } from "../modules/menu.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   createSnowflakes();
   preventDoubleTapZoom();
+  initNavigation();
 
   const backBtn = document.getElementById('backBtn');
   const kakaoLoginResult = document.getElementById('kakaoLoginResult');
+  const kakaoShareResult = document.getElementById('kakaoShareResult');
   const saveBtn = document.getElementById('saveBtn');
   const wishlistBtn = document.getElementById('wishlistBtn');
 
   // 로그인 버튼 설정
   const loggedIn = isLoggedIn();
   kakaoLoginResult.classList.toggle('hidden', loggedIn);
+  kakaoShareResult.classList.toggle('hidden', !loggedIn);
   saveBtn.classList.toggle('hidden', !loggedIn);
 
   kakaoLoginResult.addEventListener('click', () => {
     handleKakaoLogin();
+  });
+
+  kakaoShareResult.addEventListener('click', async () => {
+    if (!Kakao.isInitialized()) {
+      Kakao.init(config.KAKAO_SDK_KEY);
+    }
+
+    try {
+      const token = crypto.randomUUID();
+      await share(token, primary);
+
+      Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: '오늘 뭐 읽지?',
+          description: '지금 읽을 책을 고민 중이라면, 오늘 뭐 읽지?에서 추천 결과와 함께 새로운 책을 만나보세요.',
+          imageUrl: primary.thumbnail,
+          link: {
+            mobileWebUrl: `${window.location.origin}${config.BASE_PATH}/result?id=${token}`,
+            webUrl: `${window.location.origin}${config.BASE_PATH}/result?id=${token}`,
+          },
+        },
+        buttons: [
+          {
+            title: '결과 보기',
+            link: {
+              mobileWebUrl: `${window.location.origin}${config.BASE_PATH}/result?id=${token}`,
+              webUrl: `${window.location.origin}${config.BASE_PATH}/result?id=${token}`,
+            },
+          },
+        ],
+      });
+    } catch (e) {
+      console.error(e);
+      alert('공유하기 중 오류가 발생했습니다.');
+    }
   });
 
   backBtn.addEventListener('click', () => {
@@ -28,11 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 추천 결과 설정
   const primary = JSON.parse(sessionStorage.getItem('recommendation:primary') || 'null');
-  const others = JSON.parse(sessionStorage.getItem('recommendation:others') || '[]');
+  let others = JSON.parse(sessionStorage.getItem('recommendation:others') || '[]');
 
   if (!primary) {
     location.href = `${config.BASE_PATH}/`;
     return;
+  }
+
+  if (primary && !primary.bookId) {
+    primary.bookId = 'primary-default';
   }
 
   renderRecommendation(primary);
@@ -52,10 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       wishlistBtn.animate(
-          [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
-          { duration: 220 }
+        [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
+        { duration: 220 }
       );
-    } catch {}
+    } catch { }
 
     // 내 책장 저장 (session, DB)
     try {
@@ -100,6 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
     wishlistBtn.title = active ? '찜 해제' : '찜하기';
 
     renderDescriptionToggle();
+  }
+
+  // 찜 상태 확인
+  function isWishlisted(bookId) {
+    if (isLoggedIn()) {
+      // API 기반 확인은 로드 시 혹은 별도 상태 관리 필요
+      // 일단 세션 기반이나 UI 상태로 판단하도록 처리
+      return wishlistBtn.classList.contains('active');
+    } else {
+      const guestBooks = getGuestBookshelf();
+      // guest:bookshelf에 저장된 구조에 따라 확인
+      return guestBooks.some(b => (b.bookId || b.id) === bookId);
+    }
   }
 
   // 도서 소개 더보기 버튼 렌더링

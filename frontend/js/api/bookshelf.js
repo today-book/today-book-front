@@ -1,5 +1,5 @@
-import { api } from "./client";
-import {getGuestBookshelf} from "../modules/bookshelf-guest";
+import { api } from "./client.js";
+import { getGuestBookshelf } from "../modules/bookshelf-guest.js";
 
 function toAddBookshelfRequest(book) {
   return {
