@@ -1,39 +1,46 @@
 <script type="module">
-  import config from '../../js/config.js';
+  import config from "../../js/config.js";
 
   const params = new URLSearchParams(window.location.search);
-  const authCode = params.get('authCode');
+  const authCode = params.get("authCode");
 
   async function login(authCode) {
     try {
-      const response = await fetch(
-          `${config.API_BASE_URL}/auth/v1/login`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({ authCode })
-          }
-      );
+      const response = await fetch(`${config.API_BASE_URL}/auth/v1/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ authCode }),
+      });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
 
       const data = await response.json();
 
       // accessToken만 저장
-      sessionStorage.setItem('access_token', data.accessToken);
+      sessionStorage.setItem("access_token", data.accessToken);
 
       // refreshToken은 서버가 HttpOnly Cookie로 설정함
 
       // 로그인 성공 후 이동
+      const url = sessionStorage.getItem("redirectURL");
+      sessionStorage.removeItem("redirectURL");
+
+      if (url && url.startsWith(config.BASE_PATH)) {
+        location.replace(url);
+        return;
+      }
+
       location.replace(`${config.BASE_PATH}`);
     } catch (e) {
       console.error(e);
-      alert('로그인에 실패했습니다.');
+      alert("로그인에 실패했습니다.");
+
+      sessionStorage.removeItem("redirectURL");
       location.replace(`${config.BASE_PATH}?login=failed`);
     }
   }
@@ -41,7 +48,7 @@
   if (authCode) {
     login(authCode);
   } else {
-    alert('로그인에 실패했습니다.');
-    location.replace('/today-book-front?login=failed');
+    alert("로그인에 실패했습니다.");
+    location.replace(`${config.BASE_PATH}?login=failed`);
   }
 </script>

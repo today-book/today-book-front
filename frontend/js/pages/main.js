@@ -3,9 +3,11 @@ import { createSnowflakes, preventDoubleTapZoom } from '../modules/common.js';
 import { recommend } from "../api/recommend.js";
 import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
 import { init } from "../api/init.js";
+import { initNavigation } from "../modules/menu.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
   await init();
+  initNavigation();
 
   createSnowflakes();
   preventDoubleTapZoom();
@@ -13,13 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moodInput = document.getElementById('moodInput');
   const keywordsGrid = document.getElementById('keywordsGrid');
   const recommendBtn = document.getElementById('recommendBtn');
-  const kakaoLoginMain = document.getElementById('kakaoLoginMain');
-
-  // 로그인 UI
-  kakaoLoginMain.classList.toggle('hidden', isLoggedIn());
-
   // 카카오 로그인
-  kakaoLoginMain.addEventListener('click', handleKakaoLogin);
+  // (initNavigation에서 처리됨)
 
   // 로그인 실패 알림
   const loginResult = new URLSearchParams(location.search).get('login');
@@ -64,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(err);
       alert('추천 중 문제가 발생했습니다 😢');
     } finally {
-      recommendBtn.innerHTML = '🎁 책 추천받기';
+      recommendBtn.innerHTML = '책 추천받기';
       recommendBtn.disabled = false;
     }
   });
