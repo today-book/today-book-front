@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(err);
       alert('추천 중 문제가 발생했습니다 😢');
     } finally {
-      recommendBtn.innerHTML = '🎁 책 추천받기';
+      recommendBtn.innerHTML = '책 추천받기';
       recommendBtn.disabled = false;
     }
   });

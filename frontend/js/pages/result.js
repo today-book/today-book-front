@@ -1,6 +1,6 @@
 import config from "../config.js";
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
-import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
+import { isLoggedIn } from "../modules/login.js";
 import {
   toggleGuestBookshelf,
   isGuestBookshelf
@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // 카카오톡 공유하기
-  kakaoShareResult.addEventListener('click', async () => {
+  kakaoShareResult.addEventListener('click', async (e) => {
+    e.preventDefault();
+
     if (!Kakao.isInitialized()) {
       Kakao.init(config.KAKAO_SDK_KEY);
     }

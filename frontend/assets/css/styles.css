@@ -37,6 +37,9 @@
     --spacing-xl: 32px;
     --spacing-2xl: 48px;
 
+    /* Container Padding */
+    --container-padding-x: var(--spacing-xl);
+
     /* Border Radius - Larger for modern feel */
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -105,7 +108,7 @@ body {
 .container {
     max-width: 480px;
     margin: 0 auto;
-    padding: 40px 32px 120px;
+    padding: 40px var(--container-padding-x) 120px;
     /* Increased bottom padding */
     min-height: 100vh;
     position: relative;
@@ -498,6 +501,13 @@ body {
     transform: translateZ(40px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    overflow: hidden;
+}
+
+.card-divider {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: var(--spacing-xl) calc(-1 * var(--spacing-xl)) var(--spacing-lg);
 }
 
 
@@ -764,8 +774,12 @@ body {
 
 /* Mobile Optimization */
 @media (max-width: 480px) {
+    :root {
+        --container-padding-x: var(--spacing-lg);
+    }
+
     .container {
-        padding: 40px 24px;
+        padding: 40px var(--container-padding-x);
     }
 
     .header h1 {
@@ -808,10 +822,10 @@ body {
 }
 
 .slider-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-xl);
     font-weight: 700;
-    color: #ffffff;
-    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
     letter-spacing: -0.01em;
 }
 
@@ -823,10 +837,8 @@ body {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
 
-    padding: 0 var(--spacing-md) var(--spacing-lg);
-    /* ✅ 좌우 여백 추가 */
-    margin: 0 calc(-1 * var(--spacing-md));
-    /* ✅ 컨테이너 밖까지 스치게 */
+    padding: 0 var(--container-padding-x) var(--spacing-lg);
+    margin: 0 calc(-1 * var(--container-padding-x));
 
     -webkit-overflow-scrolling: touch;
 }

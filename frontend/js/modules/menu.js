@@ -1,6 +1,6 @@
 import config from '../config.js';
 import { isLoggedIn } from './login.js';
-import { logout } from "../api/auth";
+import { logout } from "../api/auth.js";
 
 export function initNavigation() {
     const bookshelfNavBtn = document.getElementById('bookshelfNavBtn');
