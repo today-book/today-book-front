@@ -1,5 +1,6 @@
 import config from '../config.js';
 import { isLoggedIn } from './login.js';
+import { logout } from "../api/auth";
 
 export function initNavigation() {
     const bookshelfNavBtn = document.getElementById('bookshelfNavBtn');
@@ -14,8 +15,6 @@ export function initNavigation() {
     if (logoutBtn) {
         const loggedIn = isLoggedIn();
         logoutBtn.classList.toggle('hidden', !loggedIn);
-        logoutBtn.addEventListener('click', () => {
-            location.href = `${config.BASE_PATH}/logout`;
-        });
+        logoutBtn.addEventListener('click', logout);
     }
 }

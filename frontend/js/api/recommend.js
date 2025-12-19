@@ -1,4 +1,5 @@
 import {api} from "./client.js";
+import {toRecommendationResponse} from "./dto.js";
 
 async function recommend(query, emotions) {
   const params = new URLSearchParams();
@@ -13,8 +14,7 @@ async function recommend(query, emotions) {
   if (!res.ok) throw new Error('Search API 호출 실패');
 
   const data = await res.json();
-
-  return Array.isArray(data) ? data : [data];
+  return data.map((item) => toRecommendationResponse(item));
 }
 
 export {

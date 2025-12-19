@@ -32,7 +32,9 @@ function toShareResponse(data) {
   };
 }
 
-async function share(token, book) {
+async function share(book) {
+  const token = crypto.randomUUID();
+
   const res = await api(`/api/v1/shares/book/${token}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -42,6 +44,8 @@ async function share(token, book) {
   if (!res.ok) {
     throw new Error();
   }
+
+  return token;
 }
 
 async function getShareBook(token) {

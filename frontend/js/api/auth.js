@@ -10,8 +10,6 @@ async function logout() {
   );
 
   sessionStorage.removeItem('access_token');
-
-  location.replace(`${config.BASE_PATH}`);
 }
 
 async function refreshAccessToken() {

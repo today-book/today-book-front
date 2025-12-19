@@ -1,40 +1,31 @@
 function isGuestBookshelf(bookId) {
   const books = getGuestBookshelf();
-  return books.includes(bookId);
+  return books.some((item) => item.bookId === bookId);
 }
 
 function getGuestBookshelf() {
   return JSON.parse(localStorage.getItem('guest:bookshelf') || '[]');
 }
 
-function setGuestBookshelf(book) {
-  const userbook = {
-    userId: null,
-    bookId: book.bookId,
-    book: JSON.stringify(book),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  localStorage.setItem('guest:bookshelf', JSON.stringify(userbook));
+function setGuestBookshelf(books = []) {
+  localStorage.setItem('guest:bookshelf', JSON.stringify(books));
 }
 
-function toggleGuestBookshelf(bookId, active) {
+function toggleGuestBookshelf(book, active) {
   try {
     let books = getGuestBookshelf();
 
+    const bookId = book.bookId;
     if (active) {
-      if (!books.includes(bookId)) {
-        books.push(bookId);
+      if (!books.some((item) => item.bookId === bookId)) {
+        books.push(book);
       }
     } else {
-      books = books.filter((item) => item !== bookId);
+      books = books.filter((item) => item.bookId !== bookId);
     }
 
     setGuestBookshelf(books);
-  } catch (e) {
-    console.error('wishlist(session) 저장 실패', e);
-  }
+  } catch (e) {}
 }
 
 export { isGuestBookshelf, setGuestBookshelf, getGuestBookshelf, toggleGuestBookshelf }
