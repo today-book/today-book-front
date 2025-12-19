@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!Kakao.isInitialized()) {
       Kakao.init(config.KAKAO_SDK_KEY);
+      alert("카카오 SDK가 설정되었습니다.", config.KAKAO_SDK_KEY);
     }
 
     try {
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const link = `${window.location.origin}${config.BASE_PATH}/result?id=${token}`;
 
       Kakao.Share.sendDefault({
+        container: '#kakao-login-btn',
         objectType: 'feed',
         content: {
           title: '오늘 뭐 읽지?',
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     } catch (e) {
       console.error(e);
-      alert('공유하기 중 오류가 발생했습니다.');
+      alert('공유하기 중 오류가 발생했습니다.', e);
     }
   });
 

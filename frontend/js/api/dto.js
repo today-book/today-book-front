@@ -2,6 +2,7 @@ function toRecommendationResponse(data) {
   return {
     bookId: data.bookId,
     isbn: data.isbn,
+    title: data.title,
     author: data.author,
     description: data.description,
     categories: data.categories,
