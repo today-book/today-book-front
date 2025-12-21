@@ -15,13 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moodInput = document.getElementById('moodInput');
   const keywordsGrid = document.getElementById('keywordsGrid');
   const recommendBtn = document.getElementById('recommendBtn');
-  const kakaoLoginMain = document.getElementById('kakaoLoginMain');
-
-  // 로그인 UI
-  kakaoLoginMain.classList.toggle('hidden', isLoggedIn());
-
   // 카카오 로그인
-  kakaoLoginMain.addEventListener('click', handleKakaoLogin);
+  // (initNavigation에서 처리됨)
 
   // 로그인 실패 알림
   const loginResult = new URLSearchParams(location.search).get('login');

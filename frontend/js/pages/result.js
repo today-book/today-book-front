@@ -25,8 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // 로그인 설정
-  kakaoLoginResult.classList.toggle("hidden", isLoggedIn);
-  kakaoLoginResult.addEventListener("click", handleKakaoLogin);
+  // (initNavigation에서 처리됨)
 
   // 추천 결과 설정
   const primary = JSON.parse(
@@ -108,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ],
           { duration: 220 }
         );
-      } catch {}
+      } catch { }
 
       try {
         if (isLoggedIn()) {

@@ -19,7 +19,17 @@
 
   <header class="nav-header">
     <div></div>
-    <button id="bookshelfNavBtn" class="bookshelf-nav-btn">내 책장</button>
+    <div class="nav-buttons">
+      <button id="bookshelfNavBtn" class="bookshelf-nav-btn">📚 내 책장</button>
+      <button id="kakaoLoginMain" class="kakao-login-btn-top">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
+        </svg>
+        로그인
+      </button>
+      <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
+    </div>
   </header>
 
   <div id="mainPage" class="container">
@@ -53,15 +63,6 @@
     </section>
 
     <button id="recommendBtn" class="btn-primary">책 추천받기</button>
-
-    <button id="kakaoLoginMain" class="kakao-login-btn">
-      <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path
-          d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
-      </svg>
-      카카오 로그인
-    </button>
-    <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
   </div>
 
   <script type="module" src="./js/pages/main.js"></script>

@@ -1,122 +1,101 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="description" content="크리스마스 책 추천 결과" />
-    <meta name="theme-color" content="#165B33" />
-    <title>추천 결과</title>
-    <link rel="stylesheet" href="../assets/css/styles.css" />
 
-    <script
-      src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
-      integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="크리스마스 책 추천 결과" />
+  <meta name="theme-color" content="#165B33" />
+  <title>추천 결과</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
 
-  <body>
-    <div class="snowflakes" id="snowflakes" aria-hidden="true"></div>
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
+    integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
+    crossorigin="anonymous"></script>
+</head>
 
-    <header class="nav-header">
-      <div></div>
-      <button id="bookshelfNavBtn" class="bookshelf-nav-btn">내 책장</button>
+<body>
+  <div class="snowflakes" id="snowflakes" aria-hidden="true"></div>
+
+  <header class="nav-header">
+    <div></div>
+    <div class="nav-buttons">
+      <button id="bookshelfNavBtn" class="bookshelf-nav-btn">📚 내 책장</button>
+      <button type="button" id="kakaoLoginResult" class="kakao-login-btn-top">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
+        </svg>
+        로그인
+      </button>
+      <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
+    </div>
+  </header>
+
+  <div id="resultPage" class="container">
+    <header class="header">
+      <h1>
+        <span class="header-decoration"></span>
+        추천 결과
+        <span class="header-decoration"></span>
+      </h1>
+      <p>당신을 위한 특별한 책을 찾았어요!</p>
     </header>
 
-    <div id="resultPage" class="container">
-      <header class="header">
-        <h1>
-          <span class="header-decoration"></span>
-          추천 결과
-          <span class="header-decoration"></span>
-        </h1>
-        <p>당신을 위한 특별한 책을 찾았어요!</p>
-      </header>
-
-      <div class="result-card">
-        <div class="book-image-container">
-          <div class="image-wrapper">
-            <img id="bookImage" src="" alt="책 표지" class="book-image" />
-            <button
-              id="wishlistBtn"
-              class="wishlist-btn"
-              aria-pressed="false"
-              aria-label="찜하기"
-            >
-              <svg
-                class="heart-icon"
-                viewBox="0 0 24 24"
-                preserveAspectRatio="xMidYMid meet"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="book-info">
-          <h2 id="bookTitle">책 제목</h2>
-          <p class="author" id="bookAuthor">저자명</p>
-          <p class="publisher" id="bookPublisher">출판사 | 출간일</p>
-        </div>
-
-        <div class="recommendation-reason">
-          <h3>🎄 이 책을 추천하는 이유</h3>
-          <p id="recommendationText">추천 이유가 여기에 표시됩니다.</p>
-        </div>
-
-        <div class="book-description">
-          <h3>📖 책 소개</h3>
-
-          <div class="description-wrapper collapsed" id="descriptionWrapper">
-            <p id="bookDescriptionText">책 설명이 여기에 표시됩니다.</p>
-          </div>
-
-          <button
-            type="button"
-            class="more-btn"
-            id="descriptionToggleBtn"
-            aria-expanded="false"
-          >
-            더보기
+    <div class="result-card">
+      <div class="book-image-container">
+        <div class="image-wrapper">
+          <img id="bookImage" src="" alt="책 표지" class="book-image" />
+          <button id="wishlistBtn" class="wishlist-btn" aria-pressed="false" aria-label="찜하기">
+            <svg class="heart-icon" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
           </button>
         </div>
       </div>
 
-      <section class="slider-section hidden" id="sliderSection">
-        <h3 class="slider-title">📚 함께 보면 좋은 책</h3>
-        <div class="book-slider" id="bookSlider"></div>
-      </section>
+      <div class="book-info">
+        <h2 id="bookTitle">책 제목</h2>
+        <p class="author" id="bookAuthor">저자명</p>
+        <p class="publisher" id="bookPublisher">출판사 | 출간일</p>
+      </div>
 
-      <button id="backBtn" class="back-btn">다시 추천받기</button>
+      <div class="recommendation-reason">
+        <h3>🎄 이 책을 추천하는 이유</h3>
+        <p id="recommendationText">추천 이유가 여기에 표시됩니다.</p>
+      </div>
 
-      <button type="button" id="kakaoLoginResult" class="kakao-login-btn">
-        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"
-          />
-        </svg>
-        카카오 로그인
-      </button>
+      <div class="book-description">
+        <h3>📖 책 소개</h3>
 
-      <button type="button" id="kakaoShareResult" class="kakao-login-btn">
-        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"
-          />
-        </svg>
-        카카오톡으로 결과 공유하기
-      </button>
+        <div class="description-wrapper collapsed" id="descriptionWrapper">
+          <p id="bookDescriptionText">책 설명이 여기에 표시됩니다.</p>
+        </div>
 
-      <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
+        <button type="button" class="more-btn" id="descriptionToggleBtn" aria-expanded="false">
+          더보기
+        </button>
+      </div>
     </div>
 
-    <script type="module" src="../js/pages/result.js"></script>
-  </body>
+    <section class="slider-section hidden" id="sliderSection">
+      <h3 class="slider-title">📚 함께 보면 좋은 책</h3>
+      <div class="book-slider" id="bookSlider"></div>
+    </section>
+
+    <button id="backBtn" class="back-btn">다시 추천받기</button>
+
+    <button type="button" id="kakaoShareResult" class="kakao-login-btn">
+      <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
+      </svg>
+      카카오톡으로 결과 공유하기
+    </button>
+  </div>
+
+  <script type="module" src="../js/pages/result.js"></script>
+</body>
+
 </html>

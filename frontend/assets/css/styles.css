@@ -126,8 +126,14 @@ body {
     padding: var(--spacing-md);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     z-index: 1000;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
 }
 
 .back-arrow-btn {
@@ -143,9 +149,9 @@ body {
 }
 
 .bookshelf-nav-btn {
-    background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
-    color: #FFFFFF;
+    background: #FFFFFF;
+    border: 1.5px solid #FFFFFF;
+    color: var(--primary-green);
     cursor: pointer;
     padding: 6px 14px;
     border-radius: 12px;
@@ -155,6 +161,7 @@ body {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 13px;
     font-weight: 700;
+    min-width: 85px;
 }
 
 
@@ -345,6 +352,35 @@ body {
 .kakao-icon {
     width: 20px;
     height: 20px;
+}
+
+/* 상단 카카오 로그인 버튼 */
+.kakao-login-btn-top {
+    background: #FEE500;
+    color: #000000;
+    border: none;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-family);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1.5px solid #FEE500;
+    min-width: 85px;
+}
+
+.kakao-login-btn-top:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.kakao-login-btn-top .kakao-icon {
+    width: 14px;
+    height: 14px;
 }
 
 /* 하단 내 책장 버튼 */
@@ -1077,17 +1113,18 @@ body {
 }
 
 .logout-link {
-    display: block;
-    text-align: center;
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.4);
-    text-decoration: underline;
-    margin-top: var(--spacing-2xl);
-    background: none;
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #FFFFFF;
+    text-decoration: none;
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    padding: 6px 14px;
+    border-radius: 12px;
     cursor: pointer;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: var(--spacing-xl);
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 85px;
 }

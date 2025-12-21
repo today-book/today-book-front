@@ -1,10 +1,14 @@
 import config from "../config.js";
-import { isLoggedIn } from "./login.js";
+import { isLoggedIn, handleKakaoLogin } from "./login.js";
 import { logout } from "../api/auth.js";
 
 export function initNavigation() {
   const bookshelfNavBtn = document.getElementById("bookshelfNavBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const kakaoLoginMain = document.getElementById("kakaoLoginMain");
+  const kakaoLoginResult = document.getElementById("kakaoLoginResult");
+
+  const loggedIn = isLoggedIn();
 
   if (bookshelfNavBtn) {
     bookshelfNavBtn.addEventListener("click", () => {
@@ -12,8 +16,13 @@ export function initNavigation() {
     });
   }
 
+  const loginBtn = kakaoLoginMain || kakaoLoginResult;
+  if (loginBtn) {
+    loginBtn.classList.toggle("hidden", loggedIn);
+    loginBtn.addEventListener("click", handleKakaoLogin);
+  }
+
   if (logoutBtn) {
-    const loggedIn = isLoggedIn();
     logoutBtn.classList.toggle("hidden", !loggedIn);
     logoutBtn.addEventListener("click", logout);
   }
