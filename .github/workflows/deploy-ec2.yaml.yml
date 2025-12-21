@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
           port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
           source: "./frontend/*"
-          target: "/home/ubuntu/deploy/today-book-front"
+          target: "/home/ubuntu/deploy/tmp"
           rm: true
           strip_components: 1
 
@@ -43,5 +43,13 @@ jobs:
           key: ${{ secrets.DEV_REMOTE_PRIVATE_KEY }}
           port: ${{ secrets.DEV_REMOTE_SSH_PORT }}
           script: |
-            sudo chown -R www-data:www-data /home/ubuntu/deploy/today-book-front
+            # 기존 서비스 디렉토리 제거
+            sudo rm -rf /home/ubuntu/deploy/today-book-front
+      
+            # tmp → 실제 디렉토리로 이동
+            sudo mv /home/ubuntu/deploy/tmp /home/ubuntu/deploy/today-book-front
+      
+            # nginx가 읽을 수 있도록 권한만 정리
+            sudo chown -R ubuntu:www-data /home/ubuntu/deploy/today-book-front
+            sudo chmod -R 755 /home/ubuntu/deploy/today-book-front
             sudo systemctl reload nginx
