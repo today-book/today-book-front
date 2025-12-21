@@ -7,7 +7,7 @@ import {
   isGuestBookshelf,
   toggleGuestBookshelf,
 } from "../modules/bookshelf-guest.js";
-import { share } from "../api/share.js";
+import { getShareBook, share } from "../api/share.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   createSnowflakes();
@@ -17,23 +17,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   const backBtn = document.getElementById("backBtn");
   const shareBtn = document.getElementById("kakaoShareResult");
   const wishlistBtn = document.getElementById("wishlistBtn");
-  const kakaoLoginResult = document.getElementById("kakaoLoginResult");
 
   // Kakao SDK 설정
   if (window.Kakao && !Kakao.isInitialized()) {
     Kakao.init(config.KAKAO_SDK_KEY);
   }
 
-  // 로그인 설정
-  // (initNavigation에서 처리됨)
-
   // 추천 결과 설정
-  const primary = JSON.parse(
-    sessionStorage.getItem("recommendation:primary") || "null"
-  );
-  const others = JSON.parse(
-    sessionStorage.getItem("recommendation:others") || "[]"
-  );
+  let primary;
+  let others = [];
+
+  const token = new URLSearchParams(location.search).get("token");
+
+  try {
+    if (token) {
+      primary = await getShareBook(token);
+    } else {
+      primary = JSON.parse(
+          sessionStorage.getItem("recommendation:primary") || "null"
+      );
+      others = JSON.parse(
+          sessionStorage.getItem("recommendation:others") || "[]"
+      );
+    }
+  } catch (e) {
+    console.error(e);
+  }
 
   if (!primary) {
     location.href = `${config.BASE_PATH}`;
@@ -57,8 +66,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const token = crypto.randomUUID();
       await share(token, primary);
 
-      const link = `${window.location.origin}${config.BASE_PATH}/result?token=${token}`;
-      console.log('link: ' + link);
+      const shareLink = `${window.location.origin}${config.BASE_PATH}/result?token=${token}`;
+      console.log('link: ' + shareLink);
 
       Kakao.Share.sendDefault({
         objectType: "feed",
@@ -68,22 +77,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             "지금 읽을 책을 고민 중이라면, 오늘 뭐 읽지?에서 추천 결과를 확인해보세요.",
           imageUrl: primary.thumbnail,
           link: {
-            webUrl: link,
-            mobileWebUrl: link,
+            webUrl: shareLink,
+            mobileWebUrl: shareLink,
           },
         },
         buttons: [
           {
             title: "추천 결과 보기",
             link: {
-              webUrl: link,
-              mobileWebUrl: link,
+              webUrl: shareLink,
+              mobileWebUrl: shareLink,
             },
           },
         ],
       });
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
       alert("공유 중 오류가 발생했습니다.");
     }
   });
