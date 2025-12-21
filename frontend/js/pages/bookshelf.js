@@ -1,7 +1,10 @@
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
 import config from "../config.js";
 import { isLoggedIn } from "../modules/login.js";
-import { deleteBookshelfByBookId, getBookshelfAll } from "../api/bookshelf.js";
+import {
+  deleteBookshelfById,
+  getBookshelfAll
+} from "../api/bookshelf.js";
 import {
   getGuestBookshelf,
   toggleGuestBookshelf,
@@ -63,8 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     emptyState.classList.add("hidden");
 
     books.forEach((book) => {
-      const bookObj =
-        typeof book.book === "string" ? JSON.parse(book.book) : book;
+      const bookObj = JSON.parse(book.snapshot);
       const card = document.createElement("div");
       card.className = "bookshelf-item";
 
@@ -89,18 +91,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     </div>
                 </div>
-                <button class="delete-btn" data-book-id="${
-                  bookObj.bookId
+                <button class="delete-btn" data-id="${
+                  book.id
                 }" style="position: static; margin-left: 8px;">✕</button>
             `;
 
       card.querySelector(".delete-btn").addEventListener("click", async (e) => {
         e.stopPropagation();
-        const bookId = card.querySelector(".delete-btn").dataset.bookId;
+        const id = card.querySelector(".delete-btn").dataset.id;
         if (confirm("이 책을 책장에서 삭제할까요?")) {
           try {
             if (isLoggedIn()) {
-              await deleteBookshelfByBookId(bookId);
+              await deleteBookshelfById(id);
             } else {
               toggleGuestBookshelf(bookObj, false);
             }
