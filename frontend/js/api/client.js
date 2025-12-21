@@ -31,7 +31,7 @@ async function api(url, options = {}) {
   });
 
   if (res.status !== 401) {
-    logResponse(url, res);
+    logResponse(url, res, json());
 
     return res;
   }
