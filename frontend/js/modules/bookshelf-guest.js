@@ -11,6 +11,10 @@ function setGuestBookshelf(books = []) {
   localStorage.setItem('guest:bookshelf', JSON.stringify(books));
 }
 
+function deleteGuestBookshelfAll() {
+  localStorage.removeItem('guest:bookshelf');
+}
+
 function toggleGuestBookshelf(book, active) {
   try {
     let books = getGuestBookshelf();
@@ -28,4 +32,4 @@ function toggleGuestBookshelf(book, active) {
   } catch (e) {}
 }
 
-export { isGuestBookshelf, setGuestBookshelf, getGuestBookshelf, toggleGuestBookshelf }
+export { isGuestBookshelf, setGuestBookshelf, getGuestBookshelf, toggleGuestBookshelf, deleteGuestBookshelfAll }

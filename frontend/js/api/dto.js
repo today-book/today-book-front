@@ -37,7 +37,7 @@ function toBookshelfResponse(data) {
     id: data.id,
     userId: data.userId,
     bookId: data.bookId,
-    book: {
+    snapshot: {
       bookId: snapshot.bookId,
       isbn: snapshot.isbn,
       title: snapshot.title,

@@ -1,5 +1,8 @@
 import { api } from "./client.js";
-import { getGuestBookshelf } from "../modules/bookshelf-guest.js";
+import {
+  deleteGuestBookshelfAll,
+  getGuestBookshelf
+} from "../modules/bookshelf-guest.js";
 import { toAddBookshelfRequest, toBookshelfResponse } from "./dto.js";
 
 async function addBookshelf(book) {
@@ -105,7 +108,7 @@ async function syncGuestBookshelf() {
 
   await addBookshelfAll(books);
 
-  localStorage.removeItem('guest:bookshelf');
+  deleteGuestBookshelfAll();
 }
 
-export { addBookshelf, addBookshelfAll, deleteBookshelfById, deleteBookshelfByBookId, getBookshelfById, getBookshelfAll, toggleBookshelf, isBookshelf }
+export { addBookshelf, addBookshelfAll, deleteBookshelfById, deleteBookshelfByBookId, getBookshelfById, getBookshelfAll, toggleBookshelf, isBookshelf, syncGuestBookshelf }

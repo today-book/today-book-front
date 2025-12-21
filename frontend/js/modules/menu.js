@@ -24,6 +24,9 @@ export function initNavigation() {
 
   if (logoutBtn) {
     logoutBtn.classList.toggle("hidden", !loggedIn);
-    logoutBtn.addEventListener("click", logout);
+    logoutBtn.addEventListener("click", async () => {
+      await logout();
+      location.reload();
+    });
   }
 }

@@ -8,6 +8,12 @@ function buildUrl(path) {
   return new URL(path, config.API_BASE_URL).toString();
 }
 
+function log(prefix, message) {
+  if (config.PROFILE !== 'dev') return;
+
+  console.log('[DEV] ', prefix, message);
+}
+
 function logRequest(method, url, body) {
   if (config.PROFILE !== 'dev') return;
 
@@ -112,4 +118,4 @@ async function handle401(url, options) {
   });
 }
 
-export { api }
+export { api, log }

@@ -3,12 +3,14 @@ import config from "../config.js";
 import { isLoggedIn } from "../modules/login.js";
 import {
   deleteBookshelfById,
-  getBookshelfAll
+  getBookshelfAll,
+  syncGuestBookshelf
 } from "../api/bookshelf.js";
 import {
   getGuestBookshelf,
   toggleGuestBookshelf,
 } from "../modules/bookshelf-guest.js";
+import { log } from "../api/client.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   createSnowflakes();
@@ -36,6 +38,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  const guestBooks = getGuestBookshelf();
+
+  if (isLoggedIn() && Array.isArray(guestBooks) && guestBooks.length > 0) {
+    if (confirm('임시 저장된 도서를 내 책장에 저장하시겠습니까?')) {
+      try {
+        await syncGuestBookshelf();
+      } catch (e) {
+        alert('동기화에 실패하였습니다.');
+      }
+    }
+  }
+
+  await loadBooks();
+
   async function loadBooks() {
     let books = [];
 
@@ -50,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Failed to load bookshelf", e);
     }
 
+    log("books: ", books);
     renderBooks(books);
   }
 
@@ -65,8 +82,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     emptyState.classList.add("hidden");
 
+    const loggedIn = isLoggedIn();
     books.forEach((book) => {
-      const bookObj = JSON.parse(book.snapshot);
+      const bookObj = loggedIn ? book.snapshot : book;
+
+      if (!bookObj) {
+        console.warn('[Bookshelf] invalid book', book);
+        return;
+      }
+
       const card = document.createElement("div");
       card.className = "bookshelf-item";
 
@@ -84,24 +108,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                       bookObj.author
                     }</p>
                     <div class="reason-preview line-clamp-3" style="font-size: 12px; color: var(--text-tertiary); line-height: 1.5;">
-                        ${
-                          bookObj.recommendationReason ||
-                          "추천: " + bookObj.reason ||
-                          ""
-                        }
+                        ${bookObj.reason ? `추천: ${bookObj.reason}` : ""}
                     </div>
                 </div>
                 <button class="delete-btn" data-id="${
-                  book.id
+                  loggedIn ? book.id : null
                 }" style="position: static; margin-left: 8px;">✕</button>
             `;
 
       card.querySelector(".delete-btn").addEventListener("click", async (e) => {
         e.stopPropagation();
-        const id = card.querySelector(".delete-btn").dataset.id;
         if (confirm("이 책을 책장에서 삭제할까요?")) {
           try {
             if (isLoggedIn()) {
+              const id = card.querySelector(".delete-btn").dataset.id;
               await deleteBookshelfById(id);
             } else {
               toggleGuestBookshelf(bookObj, false);
@@ -134,6 +154,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       bookshelfGrid.appendChild(card);
     });
   }
-
-  await loadBooks();
 });
