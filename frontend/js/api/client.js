@@ -9,11 +9,45 @@ function buildUrl(path) {
 }
 
 function logRequest(method, url, body) {
+  if (config.PROFILE !== 'dev') return;
+
   console.log('[REQUEST]', method, url, body);
 }
 
-function logResponse(url, res) {
-  console.log('[RESPONSE]', url, res);
+async function logResponse(url, res) {
+  if (config.PROFILE !== 'dev') return;
+
+  try {
+    const contentType = res.headers.get('content-type');
+
+    if (contentType?.includes('application/json')) {
+      const data = await res.clone().json();
+      console.log('[RESPONSE][JSON]', url, data);
+    } else {
+      const text = await res.clone().text();
+      console.log('[RESPONSE][TEXT]', url, text);
+    }
+  } catch (e) {
+    console.warn('[RESPONSE][FAILED]', url);
+  }
+}
+
+async function logError(url, res) {
+  if (config.PROFILE !== 'dev') return;
+
+  let data = null;
+
+  try {
+    data = await res.clone().json();
+  } catch {
+    data = await res.clone().text();
+  }
+
+  console.error('[ERROR]', {
+    url,
+    status: res.status,
+    data,
+  });
 }
 
 async function api(url, options = {}) {
@@ -30,13 +64,16 @@ async function api(url, options = {}) {
     credentials: 'include',
   });
 
-  if (res.status !== 401) {
-    logResponse(url, res.body);
-
-    return res;
+  if (res.status === 401) {
+    return handle401(url, options);
   }
 
-  return handle401(url, options);
+  if (!res.ok) {
+    await logError(url, res);
+  }
+
+  logResponse(url, res);
+  return res;
 }
 
 // unauthorized handler
