@@ -2,14 +2,24 @@ import config from '../config.js';
 import { refreshAccessToken } from "./auth.js";
 
 let isRefreshing = false; // 중복 실행 방지
-let retryQueue = [];        // 토큰 재발급 동안 대기할 함수 목록
+let retryQueue = [];      // 토큰 재발급 동안 대기할 함수 목록
 
 function buildUrl(path) {
   return new URL(path, config.API_BASE_URL).toString();
 }
 
+function logRequest(method, url, body) {
+  console.log('[REQUEST]', method, url, body);
+}
+
+function logResponse(url, res) {
+  console.log('[RESPONSE]', url, res);
+}
+
 async function api(url, options = {}) {
   const accessToken = sessionStorage.getItem("access_token");
+
+  logRequest(options.method, url, options.body);
 
   const res = await fetch(buildUrl(url), {
     ...options,
@@ -21,6 +31,8 @@ async function api(url, options = {}) {
   });
 
   if (res.status !== 401) {
+    logResponse(url, res);
+
     return res;
   }
 
@@ -29,7 +41,7 @@ async function api(url, options = {}) {
 
 // unauthorized handler
 async function handle401(url, options) {
-  if(!isRefreshing) {
+  if (!isRefreshing) {
     isRefreshing = true;
 
     try {

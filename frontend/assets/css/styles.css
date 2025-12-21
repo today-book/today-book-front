@@ -1092,9 +1092,8 @@ body {
 
 .empty-state {
     text-align: center;
-    padding: var(--spacing-2xl) 0;
-    color: white;
-    font-size: var(--font-size-lg);
+    padding: 60px var(--spacing-lg);
+    margin: var(--spacing-xl) 0;
 }
 
 .guest-warning {
@@ -1109,7 +1108,27 @@ body {
 }
 
 .empty-state p {
-    margin-bottom: var(--spacing-xl);
+    color: #000000;
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+}
+
+.empty-state-link {
+    background: none;
+    border: none;
+    color: var(--primary-green);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: opacity 0.2s ease;
+}
+
+.empty-state-link:active {
+    opacity: 0.7;
 }
 
 .logout-link {
