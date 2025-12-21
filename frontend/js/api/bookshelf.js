@@ -1,6 +1,6 @@
 import { api } from "./client.js";
 import { getGuestBookshelf } from "../modules/bookshelf-guest.js";
-import { toAddBookshelfRequest } from "./dto.js";
+import { toAddBookshelfRequest, toBookshelfResponse } from "./dto.js";
 
 async function addBookshelf(book) {
   const res = await api(`/api/v1/users/bookshelf`, {

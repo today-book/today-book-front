@@ -1,4 +1,4 @@
-import { api } from "./client.js";
+import config from "../config.js";
 
 function toShareRequest(data) {
   return {
@@ -12,7 +12,7 @@ function toShareRequest(data) {
     publishedAt: data.publishedAt,
     thumbnail: data.thumbnail,
     score: data.score,
-    reason: data.reason
+    reason: data.reason,
   };
 }
 
@@ -28,30 +28,32 @@ function toShareResponse(data) {
     publishedAt: data.publishedAt,
     thumbnail: data.thumbnail,
     score: data.score,
-    reason: data.reason
+    reason: data.reason,
   };
 }
 
-async function share(book) {
-  const token = crypto.randomUUID();
-
-  const res = await api(`/api/v1/shares/book/${token}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(toShareRequest(book))
-  });
+async function share(token, book) {
+  const res = await fetch(
+    `${config.API_BASE_URL}/public/v1/users/share/book/${token}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(toShareRequest(book)),
+    }
+  );
 
   if (!res.ok) {
     throw new Error();
   }
-
-  return token;
 }
 
 async function getShareBook(token) {
-  const res = await api(`/api/v1/shares/book/${token}`, {
-    method: 'GET'
-  });
+  const res = await fetch(
+    `${config.API_BASE_URL}/public/v1/users/share/book/${token}`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!res.ok) {
     throw new Error();
@@ -62,4 +64,4 @@ async function getShareBook(token) {
   return toShareResponse(data);
 }
 
-export { share, getShareBook }
+export { share, getShareBook };

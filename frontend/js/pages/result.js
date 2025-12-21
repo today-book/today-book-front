@@ -1,106 +1,114 @@
 import config from "../config.js";
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
-import { isLoggedIn } from "../modules/login.js";
-import {
-  toggleGuestBookshelf,
-  isGuestBookshelf
-} from "../modules/bookshelf-guest.js";
-import { isBookshelf, toggleBookshelf } from "../api/bookshelf.js";
-import { share } from "../api/share.js";
+import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
 import { initNavigation } from "../modules/menu.js";
+import { isBookshelf, toggleBookshelf } from "../api/bookshelf.js";
+import {
+  isGuestBookshelf,
+  toggleGuestBookshelf,
+} from "../modules/bookshelf-guest.js";
+import { share } from "../api/share.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   createSnowflakes();
   preventDoubleTapZoom();
   initNavigation();
 
-  const backBtn = document.getElementById('backBtn');
-  const kakaoShareResult = document.getElementById('kakaoShareResult');
-  const wishlistBtn = document.getElementById('wishlistBtn');
+  const backBtn = document.getElementById("backBtn");
+  const shareBtn = document.getElementById("kakaoShareResult");
+  const wishlistBtn = document.getElementById("wishlistBtn");
+  const kakaoLoginResult = document.getElementById("kakaoLoginResult");
 
-  backBtn.addEventListener('click', () => {
-    location.href = `${config.BASE_PATH}/`;
-  });
-
-  // 카카오톡 공유하기
-  kakaoShareResult.addEventListener('click', async (e) => {
-    e.preventDefault();
-
-    if (!Kakao.isInitialized()) {
-      Kakao.init(config.KAKAO_SDK_KEY);
-      alert("카카오 SDK가 설정되었습니다.", config.KAKAO_SDK_KEY);
-    }
-
-    try {
-      const token = await share(primary);
-
-      const link = `${window.location.origin}${config.BASE_PATH}/result?id=${token}`;
-
-      Kakao.Share.sendDefault({
-        container: '#kakao-login-btn',
-        objectType: 'feed',
-        content: {
-          title: '오늘 뭐 읽지?',
-          description: '지금 읽을 책을 고민 중이라면, 오늘 뭐 읽지?에서 추천 결과와 함께 새로운 책을 만나보세요.',
-          imageUrl: primary.thumbnail,
-          link: {
-            mobileWebUrl: link,
-            webUrl: link,
-          },
-        },
-        buttons: [
-          {
-            title: '추천 결과 보기',
-            link: {
-              mobileWebUrl: link,
-              webUrl: link,
-            },
-          },
-        ],
-      });
-    } catch (e) {
-      console.error(e);
-      alert('공유하기 중 오류가 발생했습니다.', e);
-    }
-  });
-
-  // 추천 결과 설정
-  const primary = JSON.parse(sessionStorage.getItem('recommendation:primary') || 'null');
-  let others = JSON.parse(sessionStorage.getItem('recommendation:others') || '[]');
-
-  if (!primary) {
-    location.href = `${config.BASE_PATH}/`;
-    return;
+  // Kakao SDK 설정
+  if (window.Kakao && !Kakao.isInitialized()) {
+    Kakao.init(config.KAKAO_SDK_KEY);
   }
 
-  if (primary && !primary.bookId) {
-    primary.bookId = 'primary-default';
+  // 로그인 설정
+  kakaoLoginResult.classList.toggle("hidden", isLoggedIn);
+  kakaoLoginResult.addEventListener("click", handleKakaoLogin);
+
+  // 추천 결과 설정
+  const primary = JSON.parse(
+    sessionStorage.getItem("recommendation:primary") || "null"
+  );
+  const others = JSON.parse(
+    sessionStorage.getItem("recommendation:others") || "[]"
+  );
+
+  if (!primary) {
+    location.href = `${config.BASE_PATH}`;
+    return;
   }
 
   await renderRecommendation(primary);
   renderBookSlider(others);
 
-  // 찜하기 버튼 설정
-  wishlistBtn.addEventListener('click', async () => {
+  // 홈으로 이동
+  backBtn.addEventListener("click", () => {
+    location.href = `${config.BASE_PATH}`;
+  });
+
+  // 카카오톡 공유하기
+  shareBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const token = crypto.randomUUID();
+      await share(token, primary);
+
+      const link = `${window.location.origin}${config.BASE_PATH}/result?token=${token}`;
+
+      Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "오늘 뭐 읽지?",
+          description:
+            "지금 읽을 책을 고민 중이라면, 오늘 뭐 읽지?에서 추천 결과를 확인해보세요.",
+          imageUrl: primary.thumbnail,
+          link: {
+            webUrl: link,
+            mobileWebUrl: link,
+          },
+        },
+        buttons: [
+          {
+            title: "추천 결과 보기",
+            link: {
+              webUrl: link,
+              mobileWebUrl: link,
+            },
+          },
+        ],
+      });
+    } catch (err) {
+      console.error(err);
+      alert("공유 중 오류가 발생했습니다.");
+    }
+  });
+
+  wishlistBtn.addEventListener("click", async () => {
     wishlistBtn.disabled = true;
 
     try {
-      const bookId = wishlistBtn.dataset.bookId;
-      if (!bookId) return;
-
-      const willBeActive = !wishlistBtn.classList.contains('active');
+      const willBeActive = !wishlistBtn.classList.contains("active");
 
       // UI 즉시 반영
-      wishlistBtn.classList.toggle('active', willBeActive);
-      wishlistBtn.setAttribute('aria-pressed', willBeActive);
-      wishlistBtn.title = willBeActive ? '찜 해제' : '찜하기';
+      wishlistBtn.classList.toggle("active", willBeActive);
+      wishlistBtn.setAttribute("aria-pressed", willBeActive);
+      wishlistBtn.title = willBeActive ? "찜 해제" : "찜하기";
 
       try {
         wishlistBtn.animate(
-          [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }],
+          [
+            { transform: "scale(1)" },
+            { transform: "scale(1.08)" },
+            { transform: "scale(1)" },
+          ],
           { duration: 220 }
         );
-      } catch { }
+      } catch {}
 
       try {
         if (isLoggedIn()) {
@@ -109,13 +117,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           toggleGuestBookshelf(primary, willBeActive);
         }
       } catch (e) {
-        console.log(e);
+        wishlistBtn.classList.toggle("active", !willBeActive);
+        wishlistBtn.setAttribute("aria-pressed", !willBeActive);
+        wishlistBtn.title = !willBeActive ? "찜 해제" : "찜하기";
 
-        wishlistBtn.classList.toggle('active', !willBeActive);
-        wishlistBtn.setAttribute('aria-pressed', !willBeActive);
-        wishlistBtn.title = !willBeActive ? '찜 해제' : '찜하기';
-
-        alert('내 책장 저장 중 오류가 발생했습니다.');
+        alert("내 책장 저장 중 오류가 발생했습니다.");
       }
     } finally {
       wishlistBtn.disabled = false;
@@ -124,13 +130,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 추천 결과 렌더링
   async function renderRecommendation(book) {
-    document.getElementById('bookTitle').textContent = book.title;
-    document.getElementById('bookAuthor').textContent = book.author;
-    document.getElementById('bookPublisher').textContent = book.publisher;
-    document.getElementById('recommendationText').textContent = book.reason;
-    document.getElementById('bookDescriptionText').textContent = book.description;
+    document.getElementById("bookTitle").textContent = book.title;
+    document.getElementById("bookAuthor").textContent = book.author;
+    document.getElementById("bookPublisher").textContent = book.publisher;
+    document.getElementById("recommendationText").textContent = book.reason;
+    document.getElementById("bookDescriptionText").textContent =
+      book.description;
 
-    const bookImage = document.getElementById('bookImage');
+    const bookImage = document.getElementById("bookImage");
     bookImage.alt = book.title;
     bookImage.src = book.thumbnail;
 
@@ -139,9 +146,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const active = await isWishlisted(bookId);
 
-    wishlistBtn.classList.toggle('active', active);
-    wishlistBtn.setAttribute('aria-pressed', active);
-    wishlistBtn.title = active ? '찜 해제' : '찜하기';
+    wishlistBtn.classList.toggle("active", active);
+    wishlistBtn.setAttribute("aria-pressed", active);
+    wishlistBtn.title = active ? "찜 해제" : "찜하기";
 
     renderDescriptionToggle();
   }
@@ -161,69 +168,71 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 도서 소개 더보기 버튼 렌더링
   function renderDescriptionToggle() {
-    const wrapper = document.getElementById('descriptionWrapper');
-    const btn = document.getElementById('descriptionToggleBtn');
-    const text = document.getElementById('bookDescriptionText');
+    const wrapper = document.getElementById("descriptionWrapper");
+    const btn = document.getElementById("descriptionToggleBtn");
+    const text = document.getElementById("bookDescriptionText");
 
     if (!wrapper || !btn || !text) return;
 
     // 책 바뀔 때마다 초기 상태로
-    wrapper.classList.add('collapsed');
-    wrapper.classList.remove('expanded');
-    btn.textContent = '더보기';
-    btn.setAttribute('aria-expanded', 'false');
+    wrapper.classList.add("collapsed");
+    wrapper.classList.remove("expanded");
+    btn.textContent = "더보기";
+    btn.setAttribute("aria-expanded", "false");
 
     // 리스너는 한 번만 바인딩
     if (!btn.dataset.bound) {
-      btn.dataset.bound = '1';
-      btn.addEventListener('click', () => {
-        const expanded = wrapper.classList.toggle('expanded');
-        wrapper.classList.toggle('collapsed', !expanded);
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", () => {
+        const expanded = wrapper.classList.toggle("expanded");
+        wrapper.classList.toggle("collapsed", !expanded);
 
-        btn.textContent = expanded ? '접기' : '더보기';
-        btn.setAttribute('aria-expanded', String(expanded));
+        btn.textContent = expanded ? "접기" : "더보기";
+        btn.setAttribute("aria-expanded", String(expanded));
       });
     }
 
     // 렌더 이후 길이 측정 → 길 때만 버튼 노출
     requestAnimationFrame(() => {
       const isOverflowing = text.scrollHeight > wrapper.clientHeight + 4;
-      btn.style.display = isOverflowing ? 'inline-block' : 'none';
+      btn.style.display = isOverflowing ? "inline-block" : "none";
     });
   }
 
   // 추천 도서 리스트 렌더링
   function renderBookSlider(books) {
-    const slider = document.getElementById('bookSlider');
-    const section = document.getElementById('sliderSection');
+    const slider = document.getElementById("bookSlider");
+    const section = document.getElementById("sliderSection");
     if (!slider || !section) return;
 
     slider.scrollLeft = 0;
-    slider.innerHTML = '';
+    slider.innerHTML = "";
 
     if (!books || books.length === 0) {
-      section.classList.add('hidden');
+      section.classList.add("hidden");
       return;
     }
-    section.classList.remove('hidden');
+    section.classList.remove("hidden");
 
     books.forEach((book) => {
-      const card = document.createElement('div');
-      card.className = 'slider-card';
+      const card = document.createElement("div");
+      card.className = "slider-card";
 
-      const imageUrl = book.thumbnail ? book.thumbnail : generateBookCoverPlaceholder(book.title);
+      const imageUrl = book.thumbnail
+        ? book.thumbnail
+        : generateBookCoverPlaceholder(book.title);
 
       card.innerHTML = `
         <img src="${imageUrl}" alt="${book.title}" />
         <div class="info">
           <div class="title">${book.title}</div>
-          <div class="author">${book.author ?? ''}</div>
+          <div class="author">${book.author ?? ""}</div>
         </div>
       `;
 
-      card.addEventListener('click', () => {
+      card.addEventListener("click", () => {
         renderRecommendation(book);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
       slider.appendChild(card);
@@ -231,18 +240,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function generateBookCoverPlaceholder(title) {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = 300;
     canvas.height = 450;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     const gradient = ctx.createLinearGradient(0, 0, 300, 450);
     const colors = [
-      ['#C41E3A', '#8B0000'],
-      ['#165B33', '#0a3d1f'],
-      ['#FFD700', '#FFA500'],
-      ['#2C3E50', '#34495E'],
-      ['#8E44AD', '#9B59B6'],
+      ["#C41E3A", "#8B0000"],
+      ["#165B33", "#0a3d1f"],
+      ["#FFD700", "#FFA500"],
+      ["#2C3E50", "#34495E"],
+      ["#8E44AD", "#9B59B6"],
     ];
     const pair = colors[Math.floor(Math.random() * colors.length)];
     gradient.addColorStop(0, pair[0]);
@@ -251,24 +260,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 300, 450);
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
     ctx.fillRect(20, 20, 260, 410);
 
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = "#FFFFFF";
     ctx.font = 'bold 28px "Noto Sans KR", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-    const words = (title || '').split(' ');
-    let line = '';
+    const words = (title || "").split(" ");
+    let line = "";
     let y = 225;
     const maxWidth = 260;
 
     for (let i = 0; i < words.length; i++) {
-      const testLine = line + words[i] + ' ';
+      const testLine = line + words[i] + " ";
       if (ctx.measureText(testLine).width > maxWidth && i > 0) {
         ctx.fillText(line, 150, y);
-        line = words[i] + ' ';
+        line = words[i] + " ";
         y += 35;
       } else {
         line = testLine;
