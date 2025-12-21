@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await share(token, primary);
 
       const link = `${window.location.origin}${config.BASE_PATH}/result?token=${token}`;
+      console.log('link: ' + link);
 
       Kakao.Share.sendDefault({
         objectType: "feed",
