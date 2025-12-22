@@ -35,9 +35,9 @@ jobs:
       - name: Generate config.js
         run: |
           echo "export default { 
-            PROFILE: 'dev',
+            PROFILE: 'prod',
             BASE_PATH: '/today-book-front',
-            API_BASE_URL: '${{ secrets.DEV_API_BASE_URL }}',
+            API_BASE_URL: '${{ secrets.API_BASE_URL }}',
             KAKAO_SDK_KEY: '${{ secrets.KAKAO_SDK_KEY }}'
           };" > frontend/js/config.js
 
