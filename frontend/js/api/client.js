@@ -1,86 +1,37 @@
 import config from '../config.js';
 import { refreshAccessToken } from "./auth.js";
+import { logRequest, logResponse } from "../modules/logger.js";
 
 let isRefreshing = false; // 중복 실행 방지
-let retryQueue = [];      // 토큰 재발급 동안 대기할 함수 목록
+let retryQueue = [];        // 토큰 재발급 동안 대기할 함수 목록
 
-function buildUrl(path) {
-  return new URL(path, config.API_BASE_URL).toString();
-}
-
-function log(prefix, message) {
-  if (config.PROFILE !== 'dev') return;
-
-  console.log('[DEV] ', prefix, message);
-}
-
-function logRequest(method, url, body) {
-  if (config.PROFILE !== 'dev') return;
-
-  console.log('[REQUEST]', method, url, body);
-}
-
-async function logResponse(url, res) {
-  if (config.PROFILE !== 'dev') return;
-
-  try {
-    const contentType = res.headers.get('content-type');
-
-    if (contentType?.includes('application/json')) {
-      const data = await res.clone().json();
-      console.log('[RESPONSE][JSON]', url, data);
-    } else {
-      const text = await res.clone().text();
-      console.log('[RESPONSE][TEXT]', url, text);
-    }
-  } catch (e) {
-    console.warn('[RESPONSE][FAILED]', url);
-  }
-}
-
-async function logError(url, res) {
-  if (config.PROFILE !== 'dev') return;
-
-  let data = null;
-
-  try {
-    data = await res.clone().json();
-  } catch {
-    data = await res.clone().text();
-  }
-
-  console.error('[ERROR]', {
-    url,
-    status: res.status,
-    data,
-  });
-}
-
-async function api(url, options = {}) {
-  const accessToken = sessionStorage.getItem("access_token");
-
+async function request(url, options = {}, { auth = false } = {}) {
   logRequest(options.method, url, options.body);
 
-  const res = await fetch(buildUrl(url), {
+  const accessToken = sessionStorage.getItem("access_token");
+
+  const res = await fetch(new URL(url, config.API_BASE_URL), {
     ...options,
     headers: {
       ...options.headers,
-      Authorization: `Bearer ${accessToken}`,
+      ...(auth && accessToken && {
+          Authorization: `Bearer ${accessToken}`,
+      }),
     },
-    credentials: 'include',
+    credentials: auth ? 'include' : 'same-origin',
   });
 
-  if (res.status === 401) {
+  if (auth && res.status === 401) {
     return handle401(url, options);
   }
 
-  if (!res.ok) {
-    await logError(url, res);
-  }
+  await logResponse(url, res);
 
-  logResponse(url, res);
   return res;
 }
+
+const api = (url, options) => request(url, options, { auth: true });
+const publicApi = (url, options) => request(url, options);
 
 // unauthorized handler
 async function handle401(url, options) {
@@ -94,6 +45,7 @@ async function handle401(url, options) {
       retryQueue.forEach(cb => cb(accessToken));
       retryQueue = [];
     } catch (e) {
+      retryQueue = [];
       sessionStorage.removeItem('access_token');
       location.replace(config.BASE_PATH || '/');
     } finally {
@@ -103,19 +55,11 @@ async function handle401(url, options) {
 
   // 액세스 토큰 재발급 후 실행
   return new Promise(resolve => {
-    retryQueue.push(async (accessToken) => {
-      const retry = await fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          Authorization: `Bearer ${accessToken}`
-        },
-
-        credentials: 'include',
-      });
+    retryQueue.push(async () => {
+      const retry = await request(url, options, { auth: true });
       resolve(retry);
     });
   });
 }
 
-export { api, log }
+export { api, publicApi }
