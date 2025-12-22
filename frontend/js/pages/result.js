@@ -141,6 +141,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 추천 결과 렌더링
   async function renderRecommendation(book) {
+    debug("recommendation book: ", book);
+
     document.getElementById("bookTitle").textContent = book.title;
     document.getElementById("bookAuthor").textContent = book.author;
     document.getElementById("bookPublisher").textContent = book.publisher;
@@ -242,6 +244,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
 
       card.addEventListener("click", () => {
+        // 메모리 상태 (즉시 동작)
+        primary = book;
+
+        // 새로고침 대비용 저장
+        sessionStorage.setItem("recommendation:primary", JSON.stringify(book));
+
+        // UI 갱신
         renderRecommendation(book);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
