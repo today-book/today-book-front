@@ -55,7 +55,7 @@ async function handle401(url, options) {
 
   // 액세스 토큰 재발급 후 실행
   return new Promise(resolve => {
-    retryQueue.push(async (accessToken) => {
+    retryQueue.push(async () => {
       const retry = await request(url, options, { auth: true });
       resolve(retry);
     });

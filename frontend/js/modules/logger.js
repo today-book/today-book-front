@@ -3,19 +3,19 @@ import config from "../config.js";
 const isDev = config.PROFILE === 'dev';
 
 function debug(prefix, message) {
-  if (config.PROFILE !== 'dev') return;
+  if (!isDev) return;
 
   console.log('[DEV] ', prefix, message);
 }
 
 function logRequest(method, url, body) {
-  if (config.PROFILE !== 'dev') return;
+  if (!isDev) return;
 
   console.log('[REQUEST]', method, url, body);
 }
 
 async function logResponse(url, res) {
-  if (config.PROFILE !== 'dev') return;
+  if (!isDev) return;
 
   try {
     const contentType = res.headers.get('content-type');
