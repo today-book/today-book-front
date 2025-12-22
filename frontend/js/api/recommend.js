@@ -1,12 +1,12 @@
-import {api} from "./client.js";
-import {toRecommendationResponse} from "./dto.js";
+import { publicApi } from "./client.js";
+import { toRecommendationResponse } from "./dto.js";
 
 async function recommend(query, emotions) {
   const params = new URLSearchParams();
   if (query) params.append('query', query);
   emotions.forEach((e) => params.append('emotions', e));
 
-  const res = await api(`/public/v1/search/books?${params.toString()}`, {
+  const res = await publicApi(`/public/v1/search/books?${params.toString()}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   });
@@ -17,6 +17,4 @@ async function recommend(query, emotions) {
   return data.map((item) => toRecommendationResponse(item));
 }
 
-export {
-  recommend
-}
+export { recommend }

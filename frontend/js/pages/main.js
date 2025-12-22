@@ -1,7 +1,6 @@
 import config from '../config.js';
 import { createSnowflakes, preventDoubleTapZoom } from '../modules/common.js';
 import { recommend } from "../api/recommend.js";
-import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
 import { init } from "../api/init.js";
 import { initNavigation } from "../modules/menu.js";
 
@@ -15,8 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const moodInput = document.getElementById('moodInput');
   const keywordsGrid = document.getElementById('keywordsGrid');
   const recommendBtn = document.getElementById('recommendBtn');
-  // 카카오 로그인
-  // (initNavigation에서 처리됨)
 
   // 로그인 실패 알림
   const loginResult = new URLSearchParams(location.search).get('login');

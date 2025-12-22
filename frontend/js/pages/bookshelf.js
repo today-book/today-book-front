@@ -10,7 +10,7 @@ import {
   getGuestBookshelf,
   toggleGuestBookshelf,
 } from "../modules/bookshelf-guest.js";
-import { log } from "../api/client.js";
+import { debug } from "../modules/logger.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   createSnowflakes();
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Failed to load bookshelf", e);
     }
 
-    log("books: ", books);
+    debug("books: ", books);
     renderBooks(books);
   }
 

@@ -1,6 +1,6 @@
 import config from "../config.js";
 import { createSnowflakes, preventDoubleTapZoom } from "../modules/common.js";
-import { handleKakaoLogin, isLoggedIn } from "../modules/login.js";
+import { isLoggedIn } from "../modules/login.js";
 import { initNavigation } from "../modules/menu.js";
 import { isBookshelf, toggleBookshelf } from "../api/bookshelf.js";
 import {
@@ -8,6 +8,7 @@ import {
   toggleGuestBookshelf,
 } from "../modules/bookshelf-guest.js";
 import { getShareBook, share } from "../api/share.js";
+import { debug } from "../modules/logger.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   createSnowflakes();
@@ -28,10 +29,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let others = [];
 
   const token = new URLSearchParams(location.search).get("token");
+  debug("token: ", token);
 
   try {
     if (token) {
       primary = await getShareBook(token);
+      debug("shared book: ", primary);
     } else {
       primary = JSON.parse(
           sessionStorage.getItem("recommendation:primary") || "null"
@@ -67,7 +70,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       await share(token, primary);
 
       const shareLink = `${window.location.origin}${config.BASE_PATH}/result?token=${token}`;
-      console.log('link: ' + shareLink);
 
       Kakao.Share.sendDefault({
         objectType: "feed",

@@ -1,4 +1,5 @@
 import config from "../config.js";
+import { publicApi } from "./client.js";
 
 function toShareRequest(data) {
   return {
@@ -33,14 +34,11 @@ function toShareResponse(data) {
 }
 
 async function share(token, book) {
-  const res = await fetch(
-    `${config.API_BASE_URL}/public/v1/users/share/book/${token}`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(toShareRequest(book)),
-    }
-  );
+  const res = await publicApi(`/public/v1/users/share/book/${token}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(toShareRequest(book)),
+  });
 
   if (!res.ok) {
     throw new Error();
@@ -48,10 +46,9 @@ async function share(token, book) {
 }
 
 async function getShareBook(token) {
-  const res = await fetch(
-    `${config.API_BASE_URL}/public/v1/users/share/book/${token}`,
+  const res = await publicApi(`/public/v1/users/share/book/${token}`,
     {
-      method: "GET",
+      method: "GET"
     }
   );
 
