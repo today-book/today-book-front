@@ -1,4 +1,3 @@
-import config from "../config.js";
 import { publicApi } from "./client.js";
 
 function toShareRequest(data) {
@@ -56,7 +55,7 @@ async function getShareBook(token) {
     throw new Error();
   }
 
-  const data = res.json();
+  const data = await res.json();
 
   return toShareResponse(data);
 }
