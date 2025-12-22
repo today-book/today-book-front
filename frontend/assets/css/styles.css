@@ -560,17 +560,17 @@ body {
 }
 
 .book-image {
-    max-width: 220px;
-    height: auto;
+    width: 200px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateZ(20px);
     display: block;
-    /* ensure wrapper matches image size */
     position: relative;
     z-index: 1;
-    /* sit under the heart button */
+    background: var(--bg-tertiary);
 }
 
 
@@ -1052,6 +1052,14 @@ body {
 .bookshelf-item .book-image-container {
     margin-bottom: 0 !important;
     flex-shrink: 0;
+}
+
+.bookshelf-item .book-image {
+    width: 80px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .bookshelf-item .book-info h3 {
