@@ -96,24 +96,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       card.innerHTML = `
                 <div class="book-image-container">
-                    <img src="${bookObj.thumbnail || ""}" alt="${
-        bookObj.title
-      }" class="book-image" style="width: 70px; border-radius: 12px;" />
+                    <img src="${bookObj.thumbnail || ""}" alt="${bookObj.title
+        }" class="book-image" />
                 </div>
                 <div class="book-info" style="flex: 1;">
-                    <h3 style="font-size: 16px; margin-bottom: 4px; color: var(--text-primary); font-weight: 700;">${
-                      bookObj.title
-                    }</h3>
-                    <p class="author" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">${
-                      bookObj.author
-                    }</p>
+                    <h3 style="font-size: 16px; margin-bottom: 4px; color: var(--text-primary); font-weight: 700;">${bookObj.title
+        }</h3>
+                    <p class="author" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">${bookObj.author
+        }</p>
                     <div class="reason-preview line-clamp-3" style="font-size: 12px; color: var(--text-tertiary); line-height: 1.5;">
                         ${bookObj.reason ? `추천: ${bookObj.reason}` : ""}
                     </div>
                 </div>
-                <button class="delete-btn" data-id="${
-                  loggedIn ? book.id : null
-                }" style="position: static; margin-left: 8px;">✕</button>
+                <button class="delete-btn" data-id="${loggedIn ? book.id : null
+        }" style="position: static; margin-left: 8px;">✕</button>
             `;
 
       card.querySelector(".delete-btn").addEventListener("click", async (e) => {
