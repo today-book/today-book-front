@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "export default { 
             PROFILE: 'prod',
-            BASE_PATH: '/today-book-front',
+            BASE_PATH: '',
             API_BASE_URL: '${{ secrets.API_BASE_URL }}',
             KAKAO_SDK_KEY: '${{ secrets.KAKAO_SDK_KEY }}'
           };" > frontend/js/config.js
