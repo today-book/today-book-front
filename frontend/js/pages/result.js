@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (!primary) {
-    location.href = `${config.BASE_PATH}`;
+    location.href = `${config.BASE_PATH}/`;
     return;
   }
 
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 홈으로 이동
   backBtn.addEventListener("click", () => {
-    location.href = `${config.BASE_PATH}`;
+    location.href = `${config.BASE_PATH}/`;
   });
 
   // 카카오톡 공유하기
