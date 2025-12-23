@@ -1,71 +1,92 @@
 <!DOCTYPE html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="오늘 뭐 읽지? 당신의 기분에 맞는 완벽한 책을 찾아드립니다"
+    />
+    <meta name="theme-color" content="#165B33" />
+    <title>오늘 뭐 읽지?</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="오늘 뭐 읽지? 당신의 기분에 맞는 완벽한 책을 찾아드립니다" />
-  <meta name="theme-color" content="#165B33" />
-  <title>오늘 뭐 읽지?</title>
-  <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      size="32x32"
+      href="./assets/images/favicon.png"
+    />
 
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
-    integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
-    crossorigin="anonymous"></script>
-</head>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
 
-<body>
-  <div class="snowflakes" id="snowflakes" aria-hidden="true"></div>
+    <script
+      src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
+      integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-  <header class="nav-header">
-    <div></div>
-    <div class="nav-buttons">
-      <button id="bookshelfNavBtn" class="bookshelf-nav-btn">📚 내 책장</button>
-      <button id="kakaoLoginMain" class="kakao-login-btn-top">
-        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" />
-        </svg>
-        로그인
-      </button>
-      <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
-    </div>
-  </header>
+  <body>
+    <div class="snowflakes" id="snowflakes" aria-hidden="true"></div>
 
-  <div id="mainPage" class="container">
-    <header class="header">
-      <h1>
-        오늘 뭐 읽지?
-      </h1>
-      <p>당신의 기분에 맞는 완벽한 책을 찾아드려요</p>
+    <header class="nav-header">
+      <div></div>
+      <div class="nav-buttons">
+        <button id="bookshelfNavBtn" class="bookshelf-nav-btn">
+          📚 내 책장
+        </button>
+        <button id="kakaoLoginMain" class="kakao-login-btn-top">
+          <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 3C6.477 3 2 6.477 2 10.5c0 2.642 2.046 4.95 5.127 6.248l-.786 2.858c-.074.27.196.498.448.38l3.358-1.57C10.736 18.47 11.355 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"
+            />
+          </svg>
+          로그인
+        </button>
+        <button id="logoutBtn" class="logout-link hidden">로그아웃</button>
+      </div>
     </header>
 
-    <div class="search-box">
-      <input type="text" id="moodInput" class="search-input" placeholder="어떤 책을 찾고 계신가요?" autocomplete="off" />
+    <div id="mainPage" class="container">
+      <header class="header">
+        <h1>오늘 뭐 읽지?</h1>
+        <p>당신의 기분에 맞는 완벽한 책을 찾아드려요</p>
+      </header>
+
+      <div class="search-box">
+        <input
+          type="text"
+          id="moodInput"
+          class="search-input"
+          placeholder="어떤 책을 찾고 계신가요?"
+          autocomplete="off"
+        />
+      </div>
+
+      <section class="keywords-section">
+        <h2>기분 키워드를 선택해보세요</h2>
+        <div class="keywords-grid" id="keywordsGrid">
+          <button class="keyword-btn" data-keyword="행복한">행복한</button>
+          <button class="keyword-btn" data-keyword="설레는">설레는</button>
+          <button class="keyword-btn" data-keyword="우울한">우울한</button>
+          <button class="keyword-btn" data-keyword="외로운">외로운</button>
+          <button class="keyword-btn" data-keyword="화난">화난</button>
+          <button class="keyword-btn" data-keyword="평온한">평온한</button>
+          <button class="keyword-btn" data-keyword="지친">지친</button>
+          <button class="keyword-btn" data-keyword="호기심">호기심</button>
+          <button class="keyword-btn" data-keyword="로맨틱한">로맨틱한</button>
+          <button class="keyword-btn" data-keyword="모험적인">모험적인</button>
+          <button class="keyword-btn" data-keyword="따뜻한">따뜻한</button>
+          <button class="keyword-btn" data-keyword="긴장된">긴장된</button>
+        </div>
+      </section>
+
+      <button id="recommendBtn" class="btn-primary">책 추천받기</button>
     </div>
 
-    <section class="keywords-section">
-      <h2>기분 키워드를 선택해보세요</h2>
-      <div class="keywords-grid" id="keywordsGrid">
-        <button class="keyword-btn" data-keyword="행복한">행복한</button>
-        <button class="keyword-btn" data-keyword="설레는">설레는</button>
-        <button class="keyword-btn" data-keyword="우울한">우울한</button>
-        <button class="keyword-btn" data-keyword="외로운">외로운</button>
-        <button class="keyword-btn" data-keyword="화난">화난</button>
-        <button class="keyword-btn" data-keyword="평온한">평온한</button>
-        <button class="keyword-btn" data-keyword="지친">지친</button>
-        <button class="keyword-btn" data-keyword="호기심">호기심</button>
-        <button class="keyword-btn" data-keyword="로맨틱한">로맨틱한</button>
-        <button class="keyword-btn" data-keyword="모험적인">모험적인</button>
-        <button class="keyword-btn" data-keyword="따뜻한">따뜻한</button>
-        <button class="keyword-btn" data-keyword="긴장된">긴장된</button>
-      </div>
-    </section>
-
-    <button id="recommendBtn" class="btn-primary">책 추천받기</button>
-  </div>
-
-  <script type="module" src="./js/pages/main.js"></script>
-</body>
-
+    <script type="module" src="./js/pages/main.js"></script>
+  </body>
 </html>
