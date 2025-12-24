@@ -244,14 +244,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
 
       card.addEventListener("click", () => {
-        // 메모리 상태 (즉시 동작)
+        // 1️⃣ 기존 primary -> others
+        others = [ primary, ...others.filter(b => b.bookId !== book.bookId && b.bookId !== primary.bookId) ];
+
+        // 2️⃣ primary = book
         primary = book;
 
-        // 새로고침 대비용 저장
-        sessionStorage.setItem("recommendation:primary", JSON.stringify(book));
+        // 3️⃣ 새로고침 대비용 저장
+        sessionStorage.setItem("recommendation:primary", JSON.stringify(primary));
+        sessionStorage.setItem("recommendation:others", JSON.stringify(others));
 
         // UI 갱신
-        renderRecommendation(book);
+        renderRecommendation(primary);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
