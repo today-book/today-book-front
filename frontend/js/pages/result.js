@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `;
 
-      card.addEventListener("click", () => {
+      card.addEventListener("click", async () => {
         // 1️⃣ 기존 primary -> others
         others = [ primary, ...others.filter(b => b.bookId !== book.bookId && b.bookId !== primary.bookId) ];
 
@@ -255,7 +255,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         sessionStorage.setItem("recommendation:others", JSON.stringify(others));
 
         // UI 갱신
-        renderRecommendation(primary);
+        await renderRecommendation(primary);
+        renderBookSlider(others);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
